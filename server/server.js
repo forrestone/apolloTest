@@ -6,13 +6,14 @@ import {
 } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-
 import { schema } from './src/schema';
-
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import multer from 'multer';
+import path from 'path';
+import sqlite from 'sqlite';
+
 
 const PORT = 4000;
 const server = express();
@@ -41,31 +42,48 @@ server.post('/files', (req, res) => {
   }
 )
 
+server.use('/files', express.static(path.join(__dirname, 'productsFiles')))
 
+/*DB initialization*/
 
+sqlite.open('keeper.sqlite', { cached: true })
+.then(() => sqlite.run('PRAGMA foreign_keys=on'))
+.then(() => sqlite.migrate())
+.then(() => {
 
-server.use('/graphql', bodyParser.json(), graphqlExpress({
-  schema
-}));
+  server.use('/graphiql', graphiqlExpress({
+    endpointURL: '/graphql',
+    subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
+  }));
 
-server.use('/graphiql', graphiqlExpress({
-  endpointURL: '/graphql',
-  subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
-}));
+  server.use('/graphql', bodyParser.json(), graphqlExpress({
+    graphiql: true,
+    pretty: true,
+    schema,
+  //  rootValue,
+    context: {
+      db: {
+        get: (...args) => sqlite.get(...args),
+        all: (...args) => sqlite.all(...args),
+        run: (...args) => sqlite.run(...args)
+      }
+    }
+  }));
+  // We wrap the express server so that we can attach the WebSocket for subscriptions
+  const ws = createServer(server);
 
-// We wrap the express server so that we can attach the WebSocket for subscriptions
-const ws = createServer(server);
+  ws.listen(PORT, () => {
+    console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
 
-ws.listen(PORT, () => {
-  console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
-
-  // Set up the WebSocket for handling GraphQL subscriptions
-  new SubscriptionServer({
-    execute,
-    subscribe,
-    schema
-  }, {
-    server: ws,
-    path: '/subscriptions',
+    // Set up the WebSocket for handling GraphQL subscriptions
+    new SubscriptionServer({
+      execute,
+      subscribe,
+      schema
+    }, {
+      server: ws,
+      path: '/subscriptions',
+    });
   });
-});
+})
+.catch(error=>console.log(error))

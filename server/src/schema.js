@@ -11,7 +11,7 @@ type Product {
   dataScadenza : String
 }
 
-type ProductBox{
+type Stock{
   id : ID!
   product : Product
   quantity : Int
