@@ -3,5 +3,7 @@
   "presets": [
     "es2015",
     "stage-0"
-  ]
+  ],
+  "sourceMaps": true,
+  "retainLines": true
 }

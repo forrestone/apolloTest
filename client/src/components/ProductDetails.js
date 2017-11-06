@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ProductPreview from './ProductPreview';
 import NotFound from './NotFound';
+import { BrowserRouter } from 'react-router-dom';
 
 import {
     gql,
@@ -21,52 +21,26 @@ class ProductDetails extends Component {
   }
 
   componentWillMount() {
-    /*this.setState({
-      name : product.name,
-      id : product.id
-    })*/
-   /* this.props.data.subscribeToMore({
-      document: messagesSubscription,
-      variables: {
-        productId: this.props.match.params.productId,
-      },
-      updateQuery: (prev, {subscriptionData}) => {
-        if (!subscriptionData.data) {
-          return prev;
-        }
-        const newMessage = subscriptionData.data.messageAdded;
-
-        // don't double add the message
-        if (!prev.channel.messages.find((msg) => msg.id === newMessage.id)) {
-          return Object.assign({}, prev, {
-            channel: Object.assign({}, prev.channel, {
-              messages: [...prev.channel.messages, newMessage],
-            })
-          });
-        } else {
-          return prev;
-        }
-      }
-    })*/
   }
   removeItem(){
-    const id = this.props.match.params.productId
-    console.log(id)
+    const $id = this.props.match.params.productId
     this.props.mutate({ 
-      variables: id,
+      variables: $id,
       optimisticResponse: {
         removeProduct: {
-          id: id,
+          id: $id,
           __typename: 'Product',
-        },
-      },
-      update: (store, { data: { removeProduct } }) => {
-        },
+        }
+      }
+    }).then(data=>{
+       // console.log(data);
+        this.props.history.push('/products')
     });
+    
   }
 
   render() {
-    const { data: {loading, error, product }, match/*, loadOlderMessages*/ } = this.props;
+    const { data: {loading, error, product }} = this.props;
     if (loading) {
     //  return <ProductPreview productId={match.params.productId}/>;
     return <div>Loading</div>;
@@ -90,8 +64,8 @@ class ProductDetails extends Component {
 }
 
 const removeProductMutation = gql`
-  mutation RemoveProduct($id:  ID!) {
-    removeProduct(id: $id) {
+  mutation RemoveProduct($productId:  ID!) {
+    removeProduct(id: $productId) {
       id
       name
       barcode
@@ -100,6 +74,17 @@ const removeProductMutation = gql`
     }
   }
 `;
+
+const RemoveProductWithMutation = graphql(
+  removeProductMutation,{
+    options: (props) => ({
+      variables: {
+        productId: props.match.params.productId,
+      },
+    })
+  }
+);
+
 
 const productDetailsQuery = gql`
   query ProductDetailsQuery($productId : ID!) {
@@ -110,11 +95,6 @@ const productDetailsQuery = gql`
     }
   }
 `;
-
-
-const RemoveProductWithMutation = graphql(
-  removeProductMutation,
-);
 
 const ProductDetailsQuery = graphql(
   productDetailsQuery,{

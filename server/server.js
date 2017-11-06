@@ -12,11 +12,37 @@ import { schema } from './src/schema';
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
+import multer from 'multer';
 
 const PORT = 4000;
 const server = express();
+server.use('*', cors());
 
-server.use('*', cors({ origin: 'http://localhost:3000' }));
+/* UPLOAD FILE TO DIR */
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './productsFiles')
+  },
+  filename(req, file, cb) {
+    cb(null, `${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage }).single('file');
+
+server.post('/files', (req, res) => {
+ 
+  upload(req, res ,function(err){
+    if (err) {
+      return res.end("Something went wrong!");
+    }
+    return res.end("File uploaded sucessfully!.");
+  })
+  }
+)
+
+
+
 
 server.use('/graphql', bodyParser.json(), graphqlExpress({
   schema

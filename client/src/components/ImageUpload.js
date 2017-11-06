@@ -1,16 +1,17 @@
-
 import React from 'react';
+import axios from 'axios';
+import clientConfig from '../config.json';
 
 class ImageUpload extends React.Component {
     constructor(props) {
       super(props);
       this.state = {file: '',imagePreviewUrl: ''};
+
     }
   
     _handleSubmit(e) {
-      e.preventDefault();
-      // TODO: do something with -> this.state.file
-      console.log('handle uploading-', this.state.file);
+      let file = this.state.file;
+      return this.props.submitAction(file)
     }
   
     _handleImageChange(e) {
@@ -40,14 +41,11 @@ class ImageUpload extends React.Component {
   
       return (
         <div className="previewComponent">
-          <form onSubmit={(e)=>this._handleSubmit(e)}>
             <input className="fileInput" 
               type="file" 
               onChange={(e)=>this._handleImageChange(e)} />
-            <button className="submitButton" 
-              type="submit" 
+            <button className="submitButton"
               onClick={(e)=>this._handleSubmit(e)}>Upload Image</button>
-          </form>
           <div className="imgPreview">
             {$imagePreview}
           </div>
