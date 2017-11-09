@@ -6,7 +6,7 @@ import {
 } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { schema } from './src/schema';
+import { schema, rootValue } from './data/schema';
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
@@ -60,7 +60,7 @@ sqlite.open('keeper.sqlite', { cached: true })
     graphiql: true,
     pretty: true,
     schema,
-  //  rootValue,
+    rootValue,
     context: {
       db: {
         get: (...args) => sqlite.get(...args),

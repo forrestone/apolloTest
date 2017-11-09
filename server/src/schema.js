@@ -6,18 +6,11 @@ const typeDefs = `
 type Product {
   id: ID!                # "!" denotes a required field
   name: String
+  description : String
   barcode : String
   image : String
   dataScadenza : String
 }
-
-type Stock{
-  id : ID!
-  product : Product
-  quantity : Int
-  scaffale : String
-}
-
 
 # This type specifies the entry points into our API
 type Query {

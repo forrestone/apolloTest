@@ -27,10 +27,11 @@ function removeProduct(id){
 }
 
 function getProduct(id) {
+  let test = Product
   return products.find(product => product.id === id);
 }
 
-
+/*
 function addFakeProduct(args) {
   lastProductId++;
   const newProduct = {
@@ -42,8 +43,8 @@ function addFakeProduct(args) {
   };
   products.push(newProduct);
 }
-
-
+*/
+/*
 // Add seed for consistent random data
 faker.seed(9);
 for (let i = 0; i < 10; i++) {
@@ -53,7 +54,7 @@ for (let i = 0; i < 10; i++) {
     image : faker.image.imageUrl(),
     dataScadenza : ''+faker.date.future()
   });
-}
+}*/
 /*
 // generate second channel for initial channel list view
 addChannel('channel2');

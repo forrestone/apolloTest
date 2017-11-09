@@ -1,21 +1,20 @@
-import Competency from './competency';
-import Developer from './developer';
-import Project from './project';
+import Customer from './customer';
+import Product from './product';
 
-export const getDevelopers = ctx =>
-  ctx.db.all('SELECT id, name, role FROM developer')
-  .then(result => result.map(r => new Developer(r.id, r.name, r.role)));
+export const getCustomers = ctx =>
+  ctx.db.all('SELECT id, name, address, partitaIva, description FROM customer')
+  .then(result => result.map(r => new Customer(r.id, r.name, r.address, r.partitaIva, p.description)));
 
-export const getProjects = ctx =>
-  ctx.db.all('SELECT id, name, description FROM project')
-  .then(result => result.map(r => new Project(r.id, r.name, r.description)));
+export const getProducts = ctx =>
+  ctx.db.all('SELECT id, name, description, barcode, imageUrl FROM product')
+  .then(result => result.map(r => new Product(r.id, r.name, r.description, r.barcode, r.imageUrl)));
 
-export const getProjectAssignment = (id, ctx) =>
-  ctx.db.get('SELECT a.projectId, p.name, p.description FROM assignments a LEFT JOIN project p ON (p.id = a.projectId) WHERE a.developerId = $id', { $id: id })
-  .then(result => new Project(result.projectId, result.name, result.description));
+export const addProduct = (obj, ctx) => ctx.db.all('INSERT INTO product (id, name, description, barcode, imageUrl) VALUES (NULL, $name, $description, $barcode, $imageUrl )', 
+  {$name : obj.name, $description : obj.description, $barcode: obj.barcode, $imageUrl :obj.imageUrl})
+  .then(r => new Product(r.id, r.name, r.description, r.barcode, r.imageUrl));
 
-export const getCompetenciesForDeveloper = (id, ctx) =>
-  ctx.db.all(
-     `SELECT s.name, c.value FROM competencies c LEFT JOIN skill s ON (c.skillId = s.id) WHERE c.developerId = $id`,
-    { $id: id })
-    .then(result => result.map(r => new Competency(r.name, r.value)));
+export const removeProduct = (id, ctx) => {
+  ctx.db.all('DELETE FROM product WHERE id=$id', {$id: id})
+  .then(r => console.log(r));
+}
+    

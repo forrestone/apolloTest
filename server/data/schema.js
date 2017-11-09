@@ -1,37 +1,44 @@
-import { buildSchema } from 'graphql';
-import { getDevelopers, getProjects } from './api';
+import { buildSchema, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import { getCustomers, getProducts, addProduct, removeProduct} from './api';
 
 export const schema = buildSchema(`
-  type Project {
+  type Product {
     id: String!,
     name: String,
+    description: String,
+    barcode: String,
+    imageUrl: String
+  }
+
+  type Customer {
+    id: String!,
+    name: String,
+    partitaIva: String,
     description: String
   }
 
-  type Competency {
-    name: String,
-    rating: Int
-  }
-
-  type Developer {
-    id: String!,
-    name: String,
-    competencies: [Competency],
-    role: Role,
-    project: Project
-  }
-
-  enum Role {
-    GRAD, DEV, SENIOR, LEAD
-  }
-
   type Query {
-    developers: [Developer],
-    projects: [Project]
+    customers: [Customer],
+    products: [Product]
+  }
+
+  type Mutation {
+    addProduct(input: ProductObj): Product
+    removeProduct(id : ID!) : Product
+  }
+
+
+  input ProductObj {
+    name: String,
+    description: String,
+    barcode: String,
+    imageUrl: String
   }
 `);
 
 export const rootValue = {
-  developers: (obj, ctx) => getDevelopers(ctx),
-  projects: (obj, ctx) => getProjects(ctx)
+  customers: (obj, ctx) => getCustomers(ctx),
+  products: (obj, ctx) => getProducts(ctx),
+  addProduct : (obj, ctx) =>addProduct(obj.input, ctx),
+  removeProduct :(obj, ctx) =>removeProduct(obj.id, ctx)
 };
