@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
-
-import './App.css';
 import ProductsListWithData from './components/ProductsListWithData';
 import NotFound from './components/NotFound';
 import ProductDetails from './components/ProductDetails';
 import AddProduct from './components/AddProduct';
+
+import './App.css'
 
 import {
   ApolloClient,
@@ -69,7 +69,7 @@ class App extends Component {
         <BrowserRouter>
           <div className="App">
             <Link to="/" className="navbar">
-              React + GraphQL Tutorial
+              Keeper Arturo
             </Link>
             <Switch>
               <Route exact path="/products" component={ProductsListWithData} />

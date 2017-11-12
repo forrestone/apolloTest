@@ -1,11 +1,18 @@
 import React from 'react';
-import { gql, graphql } from 'react-apollo';
+import {gql, graphql} from 'react-apollo';
 import ImageUpload from './ImageUpload'
-import { productsListQuery } from './ProductsListWithData';
+import {productsListQuery} from './ProductsListWithData';
 import axios from 'axios';
 import clientConfig from '../config.json';
 
-import './Styles/AddProduct.css'
+/** Styles */
+import Button from 'muicss/lib/react/button';
+import Container from 'muicss/lib/react/container';
+import Form from 'muicss/lib/react/form';
+import Input from 'muicss/lib/react/input';
+import Textarea from 'muicss/lib/react/textarea';
+
+import "./Styles/AddProduct.css"
 
 class AddProduct extends React.Component {
   constructor(props) {
@@ -13,59 +20,68 @@ class AddProduct extends React.Component {
     this.state = {
       name: "",
       barcode: "",
-      dataScadenza: "",
-      image : ""
+      descrizione: "",
+      image: ""
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this
+      .handleSubmit
+      .bind(this);
+    this.handleInputChange = this
+      .handleInputChange
+      .bind(this);
   }
 
   handleImageSubmit(file) {
-      let data = new FormData();
-      let config = clientConfig;
-      data.append('file', file);
-      data.append('name', 'test');
-  
-      return axios.post(config.serverImageUploadUrl, data)
-        .then(response =>`${config.serverImageUploadUrl}/${file.name}`)
-        .catch(error => console.log(error))
+    let data = new FormData();
+    let config = clientConfig;
+    data.append('file', file);
+    data.append('name', 'test');
+
+    return axios
+      .post(config.serverImageUploadUrl, data)
+      .then(response => `${config.serverImageUploadUrl}/${file.name}`)
+      .catch(error => console.log(error))
   }
 
   handleSubmit(event) {
     event.preventDefault()
 
-    let filename = this.refs.imageupload._handleSubmit()
-    .then(filename=>{
+    let filename = this
+      .refs
+      .imageupload
+      ._handleSubmit()
+      .then(filename => {
 
-      this.setState({
-        image: filename
-      });
+        this.setState({image: filename});
 
-      let formData = this.state;
-      this.props.mutate({ 
-  
-        variables: formData,
-        optimisticResponse: {
-          addProduct: {
-            name: formData.name,
-            id: Math.round(Math.random() * -1000000),
-            image : filename,
-            dataScadenza : formData.dataScadenza,
-            __typename: 'Product',
-          },
-        },
-        update: (store, { data: { addProduct } }) => {
-          },
-      });
-      this.setState({
-       // [name]: value
-      });
-    })
-    
+        let formData = this.state;
+        this
+          .props
+          .mutate({
+
+            variables: formData,
+            optimisticResponse: {
+              addProduct: {
+                name: formData.name,
+                id: Math.round(Math.random() * -1000000),
+                image: filename,
+                descrizione: formData.descrizione,
+                __typename: 'Product'
+              }
+            },
+            update: (store, {data: {
+                addProduct
+              }}) => {}
+          });
+        this.setState({
+          // [name]: value
+        });
+      })
+
   }
 
-  handleInputChange(evt){
+  handleInputChange(evt) {
     this.setState({
       [evt.target.name]: evt.target.value
     });
@@ -73,56 +89,39 @@ class AddProduct extends React.Component {
 
   render() {
     return (
-      <form className="AddProduct" onSubmit={this.handleSubmit}>
-        <label>
-          Nome Prodotto:
-          <input
-            name="name"
-            type="text"
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <br />
-        <label>
-          Codice a barre:
-          <input
-            name="barcode"
-            type="text"
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <label>
-          data di Scadenza:
-          <input
-            name="dataScadenza"
-            type="text"
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <br />
-        <input type="submit" value="Conferma" />
-        <ImageUpload ref="imageupload" submitAction={this.handleImageSubmit}/>       
-      </form>
+      <Container>
+        <h1 className="mui--text-center">{this.state.name}</h1>
+        <Form className="AddProduct" onSubmit={this.handleSubmit}>
+        <div className="flexRow">
+          <div className="flexColumn">
+            <Input  label="Nome Prodotto" name="name" type="text" onChange={this.handleInputChange} floatingLabel={true} required={true}/>
+            <Input  label="Codice a barre" name="barcode" type="text" onChange={this.handleInputChange} floatingLabel={true} required={true}/>
+            <Textarea label="Descrizione" name="descrizione" type="area" floatingLabel={true} onChange={this.handleInputChange}/>
+          </div>
+        <ImageUpload ref="imageupload" submitAction={this.handleImageSubmit}/>
+        </div>
+          <Button color="primary" type="submit" >
+            Conferma
+          </Button>
+          
+        </Form>
+      </Container>
     );
   }
 }
 
-
-const addProductMutation = gql`
-  mutation AddProduct($name: String!, $barcode : String, $image : String, $dataScadenza: String) {
-    addProduct(name: $name, barcode : $barcode, image : $image,  dataScadenza : $dataScadenza) {
+const addProductMutation = gql `
+  mutation AddProduct($name: String!, $barcode : String, $image : String, $descrizione : String) {
+    addProduct(input : {name: $name, barcode : $barcode, imageUrl : $image, description : $descrizione}) {
       id
       name
       barcode
-      image
-      dataScadenza
+      imageUrl
+      description
     }
   }
 `;
 
-
-const AddProductWithMutation = graphql(
-  addProductMutation,
-)(AddProduct);
+const AddProductWithMutation = graphql(addProductMutation,)(AddProduct);
 
 export default AddProductWithMutation;

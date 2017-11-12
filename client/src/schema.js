@@ -4,8 +4,8 @@ type Product {
   id: ID!
   name: String
   barcode : String
-  image : String
-  dataScadenza : String
+  image : Strings
+  
 }
 
 type Query {

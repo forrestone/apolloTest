@@ -1,14 +1,8 @@
 
-
-.AddProduct{
-    color: #FFF;
-    border: 1px solid rgba(255,255,255,0.8);
-    width : 80%;
-    margin : 0 auto;
-    display: flex;
-    flex-direction: column;
+.AddProduct .flexRow>div{
+    flex:1 1 50%;
 }
 
-label{
-    display: block;
+.AddProduct .imgPreview img{
+    max-width : 100%;
 }
