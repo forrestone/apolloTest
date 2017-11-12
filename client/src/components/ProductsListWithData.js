@@ -72,9 +72,11 @@ const ProductsList = ({
           )
         })}
       </div>
-      <Button color="primary">
-        <Link to='/AddProduct'>Aggiungi Prodotto</Link>
-      </Button>
+      <Link to='/AddProduct'>
+        <Button color="primary">
+          Aggiungi Prodotto
+        </Button>
+      </Link>
     </Container>
   );
 };
