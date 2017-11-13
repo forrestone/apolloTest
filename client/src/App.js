@@ -74,7 +74,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/products" component={ProductsListWithData} />
               <Route exact path="/addProduct" component={AddProduct} />
-              <Route path="/product/:productId" component={ProductDetails} />
+              <Route path="/product/:barcode" component={ProductDetails} />
               <Route component={NotFound} />
             </Switch>
           </div>

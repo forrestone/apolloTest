@@ -1,9 +1,8 @@
 -- Up
 CREATE TABLE product (
-  id INTEGER PRIMARY KEY,
+  barcode TEXT PRIMARY KEY,
   name TEXT,
   description TEXT,
-  barcode TEXT,
   imageUrl TEXT
 );
 CREATE TABLE customer (
@@ -15,7 +14,7 @@ CREATE TABLE customer (
 );
 
 INSERT INTO product (id, name, description, barcode, imageUrl) VALUES (NULL, 'Facelift', 'Redesign of the UI', '432424234244', 'lorempixel');
-INSERT INTO product (id, name, description, barcode, imageUrl) VALUES (NULL, 'Facelift2', 'Redesign of the UI2', '432424234244', 'lorempixel2');
+INSERT INTO product (id, name, description, barcode, imageUrl) VALUES (NULL, 'Facelift2', 'Redesign of the UI2', '432424234245', 'lorempixel2');
 
 -- Down
 DROP TABLE product;

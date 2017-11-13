@@ -12,7 +12,6 @@ class ProductDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id : "",
       name: "",
       barcode: "",
       dataScadenza: "",
@@ -23,12 +22,12 @@ class ProductDetails extends Component {
   componentWillMount() {
   }
   removeItem(){
-    const $id = this.props.match.params.productId
+    const $barcode = this.props.match.params.barcode
     this.props.mutate({ 
-      variables: $id,
+      variables: $barcode,
       optimisticResponse: {
         removeProduct: {
-          id: $id,
+          barcode: $barcode,
           __typename: 'Product',
         }
       }
@@ -56,7 +55,7 @@ class ProductDetails extends Component {
         <div className="productName">
           {product.name}
         </div>
-        <img src={product.image} alt={product.name} />
+        <img src={product.imageUrl} alt={product.name} />
         <button onClick={this.removeItem}>Elimina articolo</button>
       </div>
     );
@@ -64,22 +63,16 @@ class ProductDetails extends Component {
 }
 
 const removeProductMutation = gql`
-  mutation RemoveProduct($productId:  ID!) {
-    removeProduct(id: $productId) {
-      id
-      name
-      barcode
-      image
-      dataScadenza
+  mutation RemoveProduct($barcode:  String!) {
+    removeProduct(barcode: $barcode)
     }
-  }
 `;
 
 const RemoveProductWithMutation = graphql(
   removeProductMutation,{
     options: (props) => ({
       variables: {
-        productId: props.match.params.productId,
+        barcode : props.match.params.barcode,
       },
     })
   }
@@ -87,11 +80,11 @@ const RemoveProductWithMutation = graphql(
 
 
 const productDetailsQuery = gql`
-  query ProductDetailsQuery($productId : ID!) {
-    product(id: $productId) {
-      id
+  query ProductDetailsQuery($barcode : String!) {
+    product(barcode: $barcode) {
+      barcode
       name
-      image
+      imageUrl
     }
   }
 `;
@@ -100,7 +93,7 @@ const ProductDetailsQuery = graphql(
   productDetailsQuery,{
     options: (props) => ({
       variables: {
-        productId: props.match.params.productId,
+        barcode: props.match.params.barcode,
       },
     }),
   

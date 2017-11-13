@@ -3,10 +3,9 @@ import { getCustomers, getProducts, getProduct, addProduct, removeProduct} from 
 
 export const schema = buildSchema(`
   type Product {
-    id: String!,
     name: String,
     description: String,
-    barcode: String,
+    barcode: String!,
     imageUrl: String,
     lotti : [Lotto!]
   }
@@ -28,19 +27,19 @@ export const schema = buildSchema(`
   type Query {
     customers: [Customer],
     products: [Product],
-    product(id : String!) : Product
+    product(barcode : String!) : Product
   }
 
   type Mutation {
-    addProduct(input: ProductObj): Product
-    removeProduct(id : ID!) : String
+    addProduct(input: ProductObj): Boolean
+    removeProduct(barcode : String!) : Boolean
   }
 
 
   input ProductObj {
     name: String,
     description: String,
-    barcode: String,
+    barcode: String!,
     imageUrl: String
   }
 `);
@@ -48,7 +47,7 @@ export const schema = buildSchema(`
 export const rootValue = {
   customers: (obj, ctx) => getCustomers(ctx),
   products: (obj, ctx) => getProducts(ctx),
-  product: (obj, ctx) => getProduct(obj.id, ctx),
+  product: (obj, ctx) => getProduct(obj.barcode, ctx),
   addProduct : (obj, ctx) =>addProduct(obj.input, ctx),
-  removeProduct :(obj, ctx) =>removeProduct(obj.id, ctx)
+  removeProduct :(obj, ctx) =>removeProduct(obj.barcode, ctx)
 };

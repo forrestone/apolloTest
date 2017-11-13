@@ -20,19 +20,28 @@ export const removeCustomer = (id, ctx) => {
     
 
 export const getProducts = ctx =>
-  ctx.db.all('SELECT id, name, description, barcode, imageUrl FROM product')
-  .then(result => result.map(r => new Product(r.id, r.name, r.description, r.barcode, r.imageUrl)));
+  ctx.db.all('SELECT name, description, barcode, imageUrl FROM product')
+  .then(result => result.map(r => new Product(r.name, r.description, r.barcode, r.imageUrl)));
 
-export const getProduct = (id,ctx) =>
-  ctx.db.get('SELECT id, name, description, barcode, imageUrl FROM product  WHERE id=$id', {$id: id})
-  .then(r => new Product(r.id, r.name, r.description, r.barcode, r.imageUrl));
+export const getProduct = (barcode,ctx) =>
+  ctx.db.get('SELECT name, description, barcode, imageUrl FROM product  WHERE barcode=$barcode', {$barcode: barcode})
+  .then(r => new Product(r.name, r.description, r.barcode, r.imageUrl));
 
-export const addProduct = (obj, ctx) => ctx.db.run('INSERT INTO product (id, name, description, barcode, imageUrl) VALUES (NULL, $name, $description, $barcode, $imageUrl )', 
+
+export const addProduct = (obj, ctx) => 
+  ctx.db.run('INSERT INTO product (name, description, barcode, imageUrl) VALUES ($name, $description, $barcode, $imageUrl )', 
   {$name : obj.name, $description : obj.description, $barcode: obj.barcode, $imageUrl :obj.imageUrl})
-  .then(r => new Product(r.id, r.name, r.description, r.barcode, r.imageUrl));
+  .then(r => true)
+  .catch(e => false);
 
-export const removeProduct = (id, ctx) => {
-  ctx.db.run('DELETE FROM product WHERE id=$id', {$id: id})
-  .then(r => console.log(r));
+export const changeProduct = (obj, ctx) => ctx.db.run('UPDATE product SET name=$name, description=$description, imageUrl=$imageUrl  WHERE barcode=$barcode', 
+  {$name : obj.name, $description : obj.description, $barcode: obj.barcode, $imageUrl :obj.imageUrl})
+  .then(r => true)
+  .catch(e => false);
+
+export const removeProduct = (barcode, ctx) => {
+  ctx.db.run('DELETE FROM product WHERE barcode=$barcode', {$barcode: barcode})
+  .then(r => true)
+  .catch(e => false);
 }
     

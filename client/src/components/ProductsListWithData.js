@@ -27,9 +27,6 @@ const ProductsList = ({
       <div className="productsList" data-component-name="productList">
         <div className="header">
           <div className="cell">
-            Id
-          </div>
-          <div className="cell">
             Name
           </div>
           <div className="cell">
@@ -57,12 +54,11 @@ const ProductsList = ({
               className={'product ' + (pr.id < 0
               ? 'optimistic'
               : '')}>
-              <span className="cell">{pr.id}</span>
               <Link
                 className="cell"
                 to={pr.id < 0
                 ? `/`
-                : `product/${pr.id}`}>
+                : `product/${pr.barcode}`}>
                 {pr.name}
               </Link>
               <span className="cell">{pr.barcode}</span>
@@ -84,7 +80,6 @@ const ProductsList = ({
 export const productsListQuery = gql `
   query ProductsListQuery {
     products {
-      id
       name
       barcode
       lotti{
