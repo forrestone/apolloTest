@@ -17,7 +17,9 @@ import "./Styles/AddProduct.css"
 class AddProduct extends React.Component {
   constructor(props) {
     super(props);
+     let product = this.props.product;
     this.state = {
+      modify : false,
       name: "",
       barcode: "",
       descrizione: "",

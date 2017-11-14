@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import NotFound from './NotFound';
 import { BrowserRouter } from 'react-router-dom';
+import AddProduct from './AddProduct'
 
 import {
     gql,
     graphql,
     compose
 } from 'react-apollo';
+
+/** Styles */
+import Button from 'muicss/lib/react/button';
+import Container from 'muicss/lib/react/container';
 
 class ProductDetails extends Component {
   constructor(props) {
@@ -52,11 +57,8 @@ class ProductDetails extends Component {
     }
     return (
       <div>
-        <div className="productName">
-          {product.name}
-        </div>
-        <img src={product.imageUrl} alt={product.name} />
-        <button onClick={this.removeItem}>Elimina articolo</button>
+      <AddProduct product={product}/>
+      <button onClick={this.removeItem}>Elimina articolo</button>
       </div>
     );
   }
