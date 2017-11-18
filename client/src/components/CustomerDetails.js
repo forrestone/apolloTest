@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import NotFound from './NotFound';
 import {BrowserRouter} from 'react-router-dom';
-import AddProduct from './AddProduct'
+import AddCustomer from './AddCustomer'
 
 import {gql, graphql, compose} from 'react-apollo';
 
@@ -9,14 +9,16 @@ import {gql, graphql, compose} from 'react-apollo';
 import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
 
-class ProductDetails extends Component {
+class CustomerDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modify: false,
+      id : "",
       name: "",
-      barcode: "",
-      dataScadenza: ""
+      description: "",
+      address: "",
+      partitaIva: ""
     }
     this.removeItem = this
       .removeItem
@@ -31,15 +33,15 @@ class ProductDetails extends Component {
   }
 
   removeItem() {
-    const $barcode = this.props.match.params.barcode
+    const $id = this.props.match.params.id
     this
       .props
       .mutate({
-        variables: $barcode,
+        variables: $id,
         optimisticResponse: {
-          removeProduct: {
-            barcode: $barcode,
-            __typename: 'Product'
+          removeCustomer: {
+            id: $id,
+            __typename: 'Customer'
           }
         }
       })
@@ -48,7 +50,7 @@ class ProductDetails extends Component {
         this
           .props
           .history
-          .push('/products')
+          .push('/customers')
       });
 
   }
@@ -59,7 +61,7 @@ class ProductDetails extends Component {
     (
       <div className="buttonGroup"> 
         <div className="mui-btn" onClick={this.setEditable}>Modifica</div>
-        <div className="mui-btn mui-btn--danger"  onClick={this.removeItem}>Elimina</div>
+        <div className="mui-btn mui-btn--danger" onClick={this.removeItem}>Elimina</div>
       </div>
     )
   }
@@ -68,64 +70,58 @@ class ProductDetails extends Component {
       data: {
         loading,
         error,
-        product
+        customer
       }
     } = this.props;
     if (loading) {
-      //  return <ProductPreview productId={match.params.productId}/>;
+      //  return <CustomerPreview customerId={match.params.customerId}/>;
       return <div>Loading</div>;
     }
     if (error) {
       return <p>{error.message}</p>;
     }
-    if (product === null) {
+    if (customer === null) {
       return <NotFound/>
     }
     return (
       <Container>
-        <AddProduct product={product} modify={this.state.modify}/>
-        --placeholderLotti --
+        <AddCustomer customer={customer} modify={this.state.modify}/>
         {this.renderButtons()}
       </Container>
     );
   }
 }
 
-const removeProductMutation = gql `
-  mutation RemoveProduct($barcode:  String!) {
-    removeProduct(barcode: $barcode)
+const removeCustomerMutation = gql `
+  mutation RemoveCustomer($id:  String!) {
+    removeCustomer(id: $id)
     }
 `;
 
-const RemoveProductWithMutation = graphql(removeProductMutation, {
+const RemoveCustomerWithMutation = graphql(removeCustomerMutation, {
   options: (props) => ({
     variables: {
-      barcode: props.match.params.barcode
+      id: props.match.params.id
     }
   })
 });
 
-const productDetailsQuery = gql `
-  query ProductDetailsQuery($barcode : String!) {
-    product(barcode: $barcode) {
-      barcode
+const customerDetailsQuery = gql `
+  query CustomerDetailsQuery($id : String!) {
+    customer(id: $id) {
+      id
       name
-      imageUrl
       description
-      lotti{
-        id
-        quantita
-        posizione
-        scadenza
-      }
+      address
+      partitaIva
     }
   }
 `;
 
-const ProductDetailsQuery = graphql(productDetailsQuery, {
+const CustomerDetailsQuery = graphql(customerDetailsQuery, {
   options: (props) => ({
     variables: {
-      barcode: props.match.params.barcode
+      id: props.match.params.id
     }
   }),
 
@@ -135,12 +131,12 @@ const ProductDetailsQuery = graphql(productDetailsQuery, {
 
 });
 
-const multiple = compose(ProductDetailsQuery, RemoveProductWithMutation)(ProductDetails);
+const multiple = compose(CustomerDetailsQuery, RemoveCustomerWithMutation)(CustomerDetails);
 
-/*(graphql(removeProductMutation,{
+/*(graphql(removeCustomerMutation,{
   options: (props) => ({
     variables: {
-      productId: props.match.params.productId,
+      customerId: props.match.params.customerId,
     },
   }),
   props: (props) => {

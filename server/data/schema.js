@@ -3,6 +3,7 @@ import {
   getCustomers,
   getCustomer,
   addCustomer,
+  removeCustomer,
   getProducts,
   getProduct,
   addProduct,
@@ -56,6 +57,7 @@ export const schema = buildSchema(`
 
   type Mutation {
     addCustomer(input: CustomerObj) : Boolean
+    removeCustomer(id : String!) : Boolean
     addProduct(input: ProductObj): Boolean
     removeProduct(barcode : String!) : Boolean
   }
@@ -64,8 +66,9 @@ export const schema = buildSchema(`
 
 export const rootValue = {
   customers: (obj, ctx) => getCustomers(ctx),
-  addCustomer: (obj, ctx) => addCustomer(obj.input, ctx),
   customer: (obj, ctx) => getCustomer(obj.id, ctx),
+  addCustomer: (obj, ctx) => addCustomer(obj.input, ctx),
+  removeCustomer : (obj,ctx) =>removeCustomer(obj.id,ctx),
   products: (obj, ctx) => getProducts(ctx),
   product: (obj, ctx) => getProduct(obj.barcode, ctx),
   addProduct: (obj, ctx) => addProduct(obj.input, ctx),

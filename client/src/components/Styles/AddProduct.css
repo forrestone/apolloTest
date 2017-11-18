@@ -6,3 +6,11 @@
 .AddProduct .imgPreview img{
     max-width : 100%;
 }
+
+.customForm textarea{
+    resize:vertical
+}
+
+.AddCustomer .flexRow>div{
+    flex:1 1 auto;
+}

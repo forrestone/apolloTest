@@ -24,7 +24,7 @@ const ProductsList = ({
 
   return (
     <Container>
-      <div className="productsList" data-component-name="productList">
+      <div className="productsList tableList" data-component-name="productList">
         <div className="header">
           <div className="cell">
             Name
@@ -50,13 +50,13 @@ const ProductsList = ({
           }
           return (
             <div
-              key={pr.id}
-              className={'product ' + (pr.id < 0
+              key={pr.barcode}
+              className={'row ' + (pr.barcode < 0
               ? 'optimistic'
               : '')}>
               <Link
                 className="cell"
-                to={pr.id < 0
+                to={pr.barcode < 0
                 ? `/`
                 : `product/${pr.barcode}`}>
                 {pr.name}

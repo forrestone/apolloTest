@@ -23,7 +23,8 @@ export const changeCustomer = (obj, ctx) => ctx.db.run('UPDATE customer SET name
 
 export const removeCustomer = (id, ctx) => {
   ctx.db.run('DELETE FROM customer WHERE id=$id', {$id: id})
-  .then(r => console.log(r));
+  .then(r => true)
+  .catch(e => false);
 }
 
 

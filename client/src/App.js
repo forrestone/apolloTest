@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import ProductsListWithData from './components/ProductsListWithData';
+import CustomersListWithData from './components/CustomersListWithData';
 import NotFound from './components/NotFound';
 import ProductDetails from './components/ProductDetails';
+import CustomerDetails from './components/CustomerDetails';
 import AddProduct from './components/AddProduct';
+import AddCustomer from './components/AddCustomer';
+import MainNavigation from './components/MainNavigation';
 
 import './App.css'
 
@@ -68,11 +72,12 @@ class App extends Component {
       <ApolloProvider client={client}>
         <BrowserRouter>
           <div className="App">
-            <Link to="/" className="navbar">
-              Keeper Arturo
-            </Link>
+            <MainNavigation />
             <Switch>
               <Route exact path="/products" component={ProductsListWithData} />
+              <Route exact path="/customers" component={CustomersListWithData} />
+              <Route exact path="/addCustomer" component={AddCustomer} />
+              <Route exact path="/customer/:id" component={CustomerDetails} />
               <Route exact path="/addProduct" component={AddProduct} />
               <Route path="/product/:barcode" component={ProductDetails} />
               <Route component={NotFound} />
