@@ -21,7 +21,7 @@ class AddProduct extends React.Component {
       modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
       name: "",
       barcode: "",
-      descrizione: "",
+      description: "",
       imageUrl: ""
     }
     if (this.props.product) {
@@ -54,7 +54,7 @@ class AddProduct extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    //@todo check prod already exist
+    //@todo check prod already exist https://www.npmjs.com/package/react-confirm
     let filename = this
       .refs
       .imageupload
@@ -110,7 +110,7 @@ class AddProduct extends React.Component {
     return (
       <Container>
         <h1 className="mui--text-center">{this.state.name}</h1>
-        <Form className="AddProduct" onSubmit={this.handleSubmit}>
+        <Form className="AddProduct customForm" onSubmit={this.handleSubmit}>
           <div className="flexRow">
             <div className="flexColumn">
               <Input
@@ -133,9 +133,8 @@ class AddProduct extends React.Component {
                 required={true}/>
               <Textarea
                 label="Descrizione"
-                name="descrizione"
-                type="area"
-                value={this.state.descrizione}
+                name="description"
+                value={this.state.description}
                 disabled={!this.state.modify}
                 floatingLabel={true}
                 onChange={this.handleInputChange}/>
@@ -150,17 +149,11 @@ class AddProduct extends React.Component {
 }
 
 const addProductMutation = gql `
-  mutation AddProduct($name: String!, $barcode : String, $image : String, $descrizione : String) {
-    addProduct(input : {name: $name, barcode : $barcode, imageUrl : $image, description : $descrizione}) {
-      id
-      name
-      barcode
-      imageUrl
-      description
-    }
+  mutation AddProduct($name: String!, $barcode : String!, $image : String, $description : String) {
+    addProduct(input : {name: $name, barcode : $barcode, imageUrl : $image, description : $description})
   }
 `;
 
-const AddProductWithMutation = graphql(addProductMutation,)(AddProduct);
+const AddProductWithMutation = graphql(addProductMutation)(AddProduct);
 
 export default AddProductWithMutation;
