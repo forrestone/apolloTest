@@ -1,7 +1,7 @@
 import React from 'react';
 import {gql, graphql} from 'react-apollo';
 import ImageUpload from './ImageUpload'
-import {productsListQuery} from './ProductsListWithData';
+import {productDetailsQuery} from './ProductsListWithData';
 import axios from 'axios';
 import clientConfig from '../config.json';
 
@@ -17,15 +17,16 @@ import "./Styles/AddProduct.css"
 class AddProduct extends React.Component {
   constructor(props) {
     super(props);
-     let product = this.props.product;
     this.state = {
-      modify : false,
+      modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
       name: "",
       barcode: "",
       descrizione: "",
-      image: ""
+      imageUrl: ""
+    }
+    if (this.props.product) {
+      Object.assign(this.state, this.props.product)
     };
-
     this.handleSubmit = this
       .handleSubmit
       .bind(this);
@@ -33,6 +34,11 @@ class AddProduct extends React.Component {
       .handleInputChange
       .bind(this);
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ modify: nextProps.modify });  
+  }
+
 
   handleImageSubmit(file) {
     let data = new FormData();
@@ -48,7 +54,7 @@ class AddProduct extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-
+    //@todo check prod already exist
     let filename = this
       .refs
       .imageupload
@@ -61,17 +67,7 @@ class AddProduct extends React.Component {
         this
           .props
           .mutate({
-
             variables: formData,
-            optimisticResponse: {
-              addProduct: {
-                name: formData.name,
-                id: Math.round(Math.random() * -1000000),
-                image: filename,
-                descrizione: formData.descrizione,
-                __typename: 'Product'
-              }
-            },
             update: (store, {data: {
                 addProduct
               }}) => {}
@@ -80,7 +76,6 @@ class AddProduct extends React.Component {
           // [name]: value
         });
       })
-
   }
 
   handleInputChange(evt) {
@@ -89,23 +84,65 @@ class AddProduct extends React.Component {
     });
   }
 
+
+  ImageManager() {
+    return this.state.modify
+      ? <ImageUpload ref="imageupload" submitAction={this.handleImageSubmit}/>
+      : (
+        <div className="previewImage">
+          <img src={this.state.imageUrl} alt={this.state.name}/>
+        </div>
+      )
+  }
+
+  ButtonManager() {
+    return this.state.modify
+      ? (
+        <Button color="primary" type="submit">
+          Conferma
+        </Button>
+      )
+      : ""
+  }
+
   render() {
+
     return (
       <Container>
         <h1 className="mui--text-center">{this.state.name}</h1>
         <Form className="AddProduct" onSubmit={this.handleSubmit}>
-        <div className="flexRow">
-          <div className="flexColumn">
-            <Input  label="Nome Prodotto" name="name" type="text" onChange={this.handleInputChange} floatingLabel={true} required={true}/>
-            <Input  label="Codice a barre" name="barcode" type="text" onChange={this.handleInputChange} floatingLabel={true} required={true}/>
-            <Textarea label="Descrizione" name="descrizione" type="area" floatingLabel={true} onChange={this.handleInputChange}/>
+          <div className="flexRow">
+            <div className="flexColumn">
+              <Input
+                label="Nome Prodotto"
+                name="name"
+                type="text"
+                value={this.state.name}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+                required={true}/>
+              <Input
+                label="Codice a barre"
+                name="barcode"
+                type="text"
+                value={this.state.barcode}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+                required={true}/>
+              <Textarea
+                label="Descrizione"
+                name="descrizione"
+                type="area"
+                value={this.state.descrizione}
+                disabled={!this.state.modify}
+                floatingLabel={true}
+                onChange={this.handleInputChange}/>
+            </div>
+            {this.ImageManager()}
           </div>
-        <ImageUpload ref="imageupload" submitAction={this.handleImageSubmit}/>
-        </div>
-          <Button color="primary" type="submit" >
-            Conferma
-          </Button>
-          
+          {this.ButtonManager()}
         </Form>
       </Container>
     );

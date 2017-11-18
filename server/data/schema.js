@@ -7,7 +7,7 @@ export const schema = buildSchema(`
     description: String,
     barcode: String!,
     imageUrl: String,
-    lotti : [Lotto!]
+    lotti : [Lotto]
   }
 
   type Customer {

@@ -1,13 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import NotFound from './NotFound';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import AddProduct from './AddProduct'
 
-import {
-    gql,
-    graphql,
-    compose
-} from 'react-apollo';
+import {gql, graphql, compose} from 'react-apollo';
 
 /** Styles */
 import Button from 'muicss/lib/react/button';
@@ -17,101 +13,129 @@ class ProductDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modify: false,
       name: "",
       barcode: "",
-      dataScadenza: "",
+      dataScadenza: ""
     }
-    this.removeItem = this.removeItem.bind(this);
+    this.removeItem = this
+      .removeItem
+      .bind(this);
+    this.setEditable = this
+      .setEditable
+      .bind(this);
   }
 
-  componentWillMount() {
+  setEditable() {
+    this.setState({modify: true})
   }
-  removeItem(){
+
+  removeItem() {
     const $barcode = this.props.match.params.barcode
-    this.props.mutate({ 
-      variables: $barcode,
-      optimisticResponse: {
-        removeProduct: {
-          barcode: $barcode,
-          __typename: 'Product',
+    this
+      .props
+      .mutate({
+        variables: $barcode,
+        optimisticResponse: {
+          removeProduct: {
+            barcode: $barcode,
+            __typename: 'Product'
+          }
         }
-      }
-    }).then(data=>{
-       // console.log(data);
-        this.props.history.push('/products')
-    });
-    
+      })
+      .then(data => {
+        // console.log(data);
+        this
+          .props
+          .history
+          .push('/products')
+      });
+
   }
 
+  renderButtons(){
+    return this.state.modify ?
+    "" : 
+    (
+      <div className="buttonGroup"> 
+        <div className="mui-btn" onClick={this.setEditable}>Modifica</div>
+        <div className="mui-btn mui-btn--danger">Elimina</div>
+      </div>
+    )
+  }
   render() {
-    const { data: {loading, error, product }} = this.props;
+    const {
+      data: {
+        loading,
+        error,
+        product
+      }
+    } = this.props;
     if (loading) {
-    //  return <ProductPreview productId={match.params.productId}/>;
-    return <div>Loading</div>;
+      //  return <ProductPreview productId={match.params.productId}/>;
+      return <div>Loading</div>;
     }
     if (error) {
       return <p>{error.message}</p>;
     }
-    if(product === null){
-      return <NotFound />
+    if (product === null) {
+      return <NotFound/>
     }
     return (
-      <div>
-      <AddProduct product={product}/>
-      <button onClick={this.removeItem}>Elimina articolo</button>
-      </div>
+      <Container>
+        <AddProduct product={product} modify={this.state.modify}/>
+        --placeholderLotti --
+        {this.renderButtons()}
+      </Container>
     );
   }
 }
 
-const removeProductMutation = gql`
+const removeProductMutation = gql `
   mutation RemoveProduct($barcode:  String!) {
     removeProduct(barcode: $barcode)
     }
 `;
 
-const RemoveProductWithMutation = graphql(
-  removeProductMutation,{
-    options: (props) => ({
-      variables: {
-        barcode : props.match.params.barcode,
-      },
-    })
-  }
-);
+const RemoveProductWithMutation = graphql(removeProductMutation, {
+  options: (props) => ({
+    variables: {
+      barcode: props.match.params.barcode
+    }
+  })
+});
 
-
-const productDetailsQuery = gql`
+const productDetailsQuery = gql `
   query ProductDetailsQuery($barcode : String!) {
     product(barcode: $barcode) {
       barcode
       name
       imageUrl
+      description
+      lotti{
+        id
+        quantita
+        posizione
+        scadenza
+      }
     }
   }
 `;
 
-const ProductDetailsQuery = graphql(
-  productDetailsQuery,{
-    options: (props) => ({
-      variables: {
-        barcode: props.match.params.barcode,
-      },
-    }),
-  
-    props: (props) => {
-      return {
-        data: props.data,
-      };
+const ProductDetailsQuery = graphql(productDetailsQuery, {
+  options: (props) => ({
+    variables: {
+      barcode: props.match.params.barcode
     }
-  
-  })
-  ;
+  }),
 
+  props: (props) => {
+    return {data: props.data};
+  }
 
-  const multiple = compose(
-    ProductDetailsQuery,RemoveProductWithMutation
-  )(ProductDetails);
+});
+
+const multiple = compose(ProductDetailsQuery, RemoveProductWithMutation)(ProductDetails);
 
 /*(graphql(removeProductMutation,{
   options: (props) => ({
