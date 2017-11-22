@@ -5,6 +5,15 @@ CREATE TABLE product (
   description TEXT,
   imageUrl TEXT
 );
+
+CREATE TABLE batch (
+  id INTEGER PRIMARY KEY,
+  barcode TEXT,
+  quantita INTEGER,
+  posizione TEXT,
+  scadenza TEXT
+);
+
 CREATE TABLE customer (
   id INTEGER PRIMARY KEY,
   name TEXT,

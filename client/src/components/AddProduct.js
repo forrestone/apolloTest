@@ -71,10 +71,16 @@ class AddProduct extends React.Component {
             update: (store, {data: {
                 addProduct
               }}) => {}
+          })
+          .then(data => {
+            // console.log(data);
+            this
+              .props
+              .history
+              .push('/products')
           });
-        this.setState({
-          // [name]: value
-        });
+
+        
       })
   }
 

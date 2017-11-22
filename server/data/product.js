@@ -7,4 +7,12 @@ class Product {
   }
 }
 
-export default Product;
+class Batch {
+  constructor(id, quantita, posizione, scadenza){
+    quantita
+    posizione
+    scadenza
+  }
+}
+
+export default {Product, Batch};

@@ -46,7 +46,6 @@ class CustomerDetails extends Component {
         }
       })
       .then(data => {
-        // console.log(data);
         this
           .props
           .history

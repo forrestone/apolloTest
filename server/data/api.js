@@ -1,8 +1,8 @@
 import Customer from './customer';
-import Product from './product';
+import {Product, Batch} from './product';
 
 
-    /* CUSTOMERS*/
+/* CUSTOMERS*/
 export const getCustomers = ctx =>
   ctx.db.all('SELECT id, name, address, partitaIva, description FROM customer')
   .then(result => result.map(r => new Customer(r.id, r.name, r.address, r.partitaIva, r.description)));
@@ -28,7 +28,7 @@ export const removeCustomer = (id, ctx) => {
 }
 
 
-    /* PRODUCTS*/
+/* PRODUCTS*/
 export const getProducts = ctx =>
   ctx.db.all('SELECT name, description, barcode, imageUrl FROM product')
   .then(result => result.map(r => new Product(r.name, r.description, r.barcode, r.imageUrl)));
@@ -54,4 +54,32 @@ export const removeProduct = (barcode, ctx) => {
   .then(r => true)
   .catch(e => false);
 }
-    
+
+/* LOTTI*/
+export const getBatches = (barcode, ctx) =>
+  ctx.db.all('SELECT id, quantita, posizione, scadenza FROM batch WHERE barcode=$barcode',{$barcode:barcode})
+  .then(result => result.map(r => new Batch(r.id, r.quantita, r.posizione, r.scadenza)));
+
+export const addBatch = (obj, ctx) => 
+  ctx.db.run('INSERT INTO batch (id, quantita, posizione, scadenza, barcode) VALUES ($id, $quantita, $posizione, $scadenza, $barcode)', 
+  {$id : obj.id, $quantita : obj.quantita, $scadenza :obj.scadenza, $barcode: obj.barcode})
+  .then(r => true)
+  .catch(e => false);
+/*
+export const getBatch = (id ,ctx) =>
+  ctx.db.get('SELECT name, description, barcode, imageUrl FROM product  WHERE barcode=$barcode', {$barcode: barcode})
+  .then(r => new Product(r.name, r.description, r.barcode, r.imageUrl));
+
+
+
+
+export const changeProduct = (obj, ctx) => ctx.db.run('UPDATE product SET name=$name, description=$description, imageUrl=$imageUrl  WHERE barcode=$barcode', 
+  {$name : obj.name, $description : obj.description, $barcode: obj.barcode, $imageUrl :obj.imageUrl})
+  .then(r => true)
+  .catch(e => false);
+
+export const removeProduct = (barcode, ctx) => {
+  ctx.db.run('DELETE FROM product WHERE barcode=$barcode', {$barcode: barcode})
+  .then(r => true)
+  .catch(e => false);
+}*/

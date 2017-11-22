@@ -7,14 +7,16 @@ import {
   getProducts,
   getProduct,
   addProduct,
-  removeProduct
+  removeProduct,
+  getBatches,
+  addBatch
 } from './api';
 
 export const schema = buildSchema(`
   type Product {
     name: String,
     description: String,
-    barcode: String!,
+    barcode: String,
     imageUrl: String,
     lotti : [Lotto]
   }
@@ -41,8 +43,16 @@ export const schema = buildSchema(`
     address : String
   }
 
-  type Lotto{
+ type Lotto{
     id : String!
+    quantita : Int
+    posizione : String
+    scadenza : String
+  }
+
+  input LottoObj{
+    id : String!
+    barcode : String
     quantita : Int
     posizione : String
     scadenza : String
@@ -53,6 +63,7 @@ export const schema = buildSchema(`
     customer(id : String!) : Customer
     products: [Product]
     product(barcode : String!) : Product
+    batches(barcode : String!) : [Lotto]
   }
 
   type Mutation {
@@ -60,6 +71,7 @@ export const schema = buildSchema(`
     removeCustomer(id : String!) : Boolean
     addProduct(input: ProductObj): Boolean
     removeProduct(barcode : String!) : Boolean
+    addBatch(input : LottoObj) : Boolean
   }
 
 `);
@@ -72,5 +84,7 @@ export const rootValue = {
   products: (obj, ctx) => getProducts(ctx),
   product: (obj, ctx) => getProduct(obj.barcode, ctx),
   addProduct: (obj, ctx) => addProduct(obj.input, ctx),
-  removeProduct: (obj, ctx) => removeProduct(obj.barcode, ctx)
+  removeProduct: (obj, ctx) => removeProduct(obj.barcode, ctx),
+  addBatch: (obj, ctx) => addBatch(obj.input, ctx),
+  batches: (obj, ctx) => getBatches(obj.barcode, ctx)
 };
