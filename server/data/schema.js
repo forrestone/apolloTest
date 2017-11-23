@@ -8,7 +8,7 @@ import {
   getProduct,
   addProduct,
   removeProduct
-} from './api';
+} from './resolvers';
 
 export const schema = buildSchema(`
   type Product {
