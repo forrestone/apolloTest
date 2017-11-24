@@ -7,7 +7,9 @@ import {
   getProducts,
   getProduct,
   addProduct,
-  removeProduct
+  removeProduct,
+  addBatch,
+  removeBatch
 } from './resolvers';
 
 export const schema = buildSchema(`
@@ -48,6 +50,14 @@ export const schema = buildSchema(`
     scadenza : String
   }
 
+  input LottoObj{
+    id : String!
+    barcode: String
+    quantita : Int
+    posizione : String
+    scadenza : String
+  }
+
   type Query {
     customers: [Customer]
     customer(id : String!) : Customer
@@ -60,10 +70,26 @@ export const schema = buildSchema(`
     removeCustomer(id : String!) : Boolean
     addProduct(input: ProductObj): Boolean
     removeProduct(barcode : String!) : Boolean
+    addBatch(input : LottoObj) : Product
+    removeBatch(barcode :String!, id: String) : Product
   }
 
 `);
 
+export const rootValue = {
+  customers: (obj) => getCustomers(),
+  customer: (obj) => getCustomer(obj.id),
+  addCustomer: (obj) => addCustomer(obj.input),
+  removeCustomer : (obj) =>removeCustomer(obj.id),
+  products: (obj) => getProducts(),
+  product: (obj) => getProduct(obj.barcode),
+  addProduct: (obj) => addProduct(obj.input),
+  removeProduct: (obj) => removeProduct(obj.barcode),
+  addBatch :(obj)=> addBatch(),
+  removeBatch:(barcode, id)=> removeBatch(barcode, id)
+};
+
+/*
 export const rootValue = {
   customers: (obj, ctx) => getCustomers(ctx),
   customer: (obj, ctx) => getCustomer(obj.id, ctx),
@@ -73,4 +99,4 @@ export const rootValue = {
   product: (obj, ctx) => getProduct(obj.barcode, ctx),
   addProduct: (obj, ctx) => addProduct(obj.input, ctx),
   removeProduct: (obj, ctx) => removeProduct(obj.barcode, ctx)
-};
+};*/

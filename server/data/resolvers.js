@@ -4,13 +4,13 @@ import faker from 'faker';
 */
 
 import Customer from './customer';
-import Product from './product';
+import {Product, Batch} from './product';
 
 let products = [];
 export const getProducts = ()=>products
 
 export const  addProduct = (args)=> {
-  newProduct = new Product(args.name, args.description, args.barcode, args.imageUrl);
+  let newProduct = new Product(args.name, args.description, args.barcode, args.imageUrl);
   products.push(newProduct);
   return newProduct;
 }
@@ -23,6 +23,18 @@ export const removeProduct = (barcode)=>{
 
 export const getProduct = (barcode) =>{
   return products.find(product => product.barcode === barcode);
+}
+
+export const  addBatch = (args)=> {
+  let product = getProduct(args.abrcode)
+  product.lotti.add(new Batch(args.id, args.quantita, args.posizione,args.scadenza))
+  return product;
+}
+
+export const removeBatch = (barcode, id)=>{
+  let product = getProduct(args.abrcode)
+  product = product.lotti((batch) => batch.id !== id)
+  return product
 }
 
 let customers = [];
@@ -40,7 +52,7 @@ export const removeCustomer = (id) =>{
   return customerToRemove
 }
 
-export const getCustomers = (id) =>{
+export const getCustomer = (id) =>{
   return customers.find(customer => customer.id === id);
 }
 
@@ -74,5 +86,6 @@ for (let i = 0; i < 10; i++) {
 // generate second channel for initial channel list view
 addChannel('channel2');
 */
-
+/*
 const pubsub = new PubSub();
+*/
