@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import NotFound from './NotFound';
 import AddProduct from './AddProduct'
 import BatchesDetail from './BatchesDetail'
+import {Link} from 'react-router-dom';
 
 import {gql, graphql, compose} from 'react-apollo';
 
 /** Styles */
 import Container from 'muicss/lib/react/container';
+import Button from 'muicss/lib/react/button';
 
 class ProductDetails extends Component {
   constructor(props) {
@@ -51,10 +53,16 @@ class ProductDetails extends Component {
       });
 
   }
+  
+  reloadPage(){
+    window.location.reload();
+  }
 
   renderButtons(){
     return this.state.modify ?
-    "" : 
+    (
+      <Button onClick={this.reloadPage}>Annulla</Button>
+    ) : 
     (
       <div className="buttonGroup"> 
         <div className="mui-btn" onClick={this.setEditable}>Modifica</div>

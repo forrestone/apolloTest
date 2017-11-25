@@ -112,6 +112,7 @@ class AddProduct extends React.Component {
     return (
       <Container>
         <h1 className="mui--text-center">{this.state.name}</h1>
+        <h2 className="mui--text-center">{this.state.barcode}</h2>
         <Form className="AddProduct customForm" onSubmit={this.handleSubmit}>
           <div className="flexRow">
             <div className="flexColumn">
