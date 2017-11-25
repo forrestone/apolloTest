@@ -38,6 +38,7 @@ export const schema = buildSchema(`
   }
 
   input CustomerObj {
+    id: String!,
     name: String,
     partitaIva: String,
     description: String,

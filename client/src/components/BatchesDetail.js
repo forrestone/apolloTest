@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import NotFound from './NotFound';
-import AddProduct from './AddProduct'
 
-import {gql, graphql, compose} from 'react-apollo';
+import {gql, graphql} from 'react-apollo';
 
 /** Styles */
 import Container from 'muicss/lib/react/container';

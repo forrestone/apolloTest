@@ -1,7 +1,6 @@
 import React from 'react';
 import {gql, graphql} from 'react-apollo';
 import ImageUpload from './ImageUpload'
-import {productDetailsQuery} from './ProductsListWithData';
 import axios from 'axios';
 import clientConfig from '../config.json';
 
@@ -55,7 +54,7 @@ class AddProduct extends React.Component {
   handleSubmit(event) {
     event.preventDefault()
     //@todo check prod already exist https://www.npmjs.com/package/react-confirm
-    let filename = this
+    this
       .refs
       .imageupload
       ._handleSubmit()

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import NotFound from './NotFound';
 import AddProduct from './AddProduct'
 import BatchesDetail from './BatchesDetail'
-import {Link} from 'react-router-dom';
 
 import {gql, graphql, compose} from 'react-apollo';
 

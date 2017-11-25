@@ -1,9 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import clientConfig from '../config.json';
 
 /** Styles */
-import Button from 'muicss/lib/react/button';
 
 class ImageUpload extends React.Component {
   constructor(props) {
@@ -39,7 +36,7 @@ class ImageUpload extends React.Component {
     let {imagePreviewUrl} = this.state;
     let $imagePreview = null;
     if (imagePreviewUrl) {
-      $imagePreview = (<img src={imagePreviewUrl}/>);
+      $imagePreview = (<img src={imagePreviewUrl} alt={imagePreviewUrl}/>);
     } else {
       $imagePreview = (
         <div className="previewText">Anteprima Immagine</div>

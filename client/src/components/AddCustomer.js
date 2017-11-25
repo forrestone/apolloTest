@@ -1,7 +1,5 @@
 import React from 'react';
 import {gql, graphql} from 'react-apollo';
-import axios from 'axios';
-import clientConfig from '../config.json';
 
 /** Styles */
 import Button from 'muicss/lib/react/button';
@@ -15,6 +13,7 @@ class AddCustomer extends React.Component {
     super(props);
     this.state = {
       modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
+      id : "",
       name : "",
       partitaIva : "",
       address : "",
@@ -78,6 +77,15 @@ class AddCustomer extends React.Component {
         <Form className="AddCustomer customForm" onSubmit={this.handleSubmit}>
           <div className="flexRow">
             <div className="flexColumn">
+            <Input
+                label="Id"
+                name="id"
+                type="text"
+                value={this.state.id}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+                required={true}/>
               <Input
                 label="Nome"
                 name="name"
@@ -120,8 +128,8 @@ class AddCustomer extends React.Component {
 }
 
 const addCustomerMutation = gql `
-  mutation AddProduct($name: String!, $partitaIva : String, $address : String, $description : String) {
-    addCustomer(input : {name: $name, partitaIva : $partitaIva, address : $address, description : $description})
+  mutation AddProduct($id: String!, $name: String!, $partitaIva : String, $address : String, $description : String) {
+    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, description : $description})
   }
 `;
 

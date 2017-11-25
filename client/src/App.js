@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import ProductsListWithData from './components/ProductsListWithData';
 import CustomersListWithData from './components/CustomersListWithData';
 import NotFound from './components/NotFound';

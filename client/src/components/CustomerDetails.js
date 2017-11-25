@@ -1,12 +1,10 @@
 import React, {Component} from 'react';
 import NotFound from './NotFound';
-import {BrowserRouter} from 'react-router-dom';
 import AddCustomer from './AddCustomer'
 
 import {gql, graphql, compose} from 'react-apollo';
 
 /** Styles */
-import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
 
 class CustomerDetails extends Component {

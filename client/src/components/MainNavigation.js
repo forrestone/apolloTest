@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {Link} from 'react-router-dom';
 import Appbar from 'muicss/lib/react/appbar';
 import Button from 'muicss/lib/react/button';
