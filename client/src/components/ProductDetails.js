@@ -53,7 +53,7 @@ class ProductDetails extends Component {
       });
 
   }
-  
+
   reloadPage(){
     window.location.reload();
   }
@@ -61,7 +61,7 @@ class ProductDetails extends Component {
   renderButtons(){
     return this.state.modify ?
     (
-      <Button onClick={this.reloadPage}>Annulla</Button>
+      <Button color="accent" onClick={this.reloadPage}>Annulla</Button>
     ) : 
     (
       <div className="buttonGroup"> 
