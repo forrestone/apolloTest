@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import NotFound from './NotFound';
-import {BrowserRouter} from 'react-router-dom';
 import AddProduct from './AddProduct'
+import BatchesDetail from './BatchesDetail'
 
 import {gql, graphql, compose} from 'react-apollo';
 
 /** Styles */
-import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
 
 class ProductDetails extends Component {
@@ -84,8 +83,8 @@ class ProductDetails extends Component {
     return (
       <Container>
         <AddProduct product={product} modify={this.state.modify}/>
-        --placeholderLotti --
         {this.renderButtons()}
+        <BatchesDetail lotti={product.lotti} barcode={product.barcode}/>
       </Container>
     );
   }
@@ -126,6 +125,9 @@ const ProductDetailsQuery = graphql(productDetailsQuery, {
   options: (props) => ({
     variables: {
       barcode: props.match.params.barcode
+    },
+    options: {
+      pollInterval: 5000
     }
   }),
 

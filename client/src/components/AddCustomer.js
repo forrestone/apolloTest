@@ -46,10 +46,12 @@ class AddCustomer extends React.Component {
           update: (store, {data: {
               AddCustomer
             }}) => {}
-        });
-      this.setState({
-        // [name]: value
-      });
+        }).then(
+          this
+          .props
+          .history
+          .push('/customers')
+        )
   }
 
   handleInputChange(evt) {

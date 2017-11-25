@@ -71,10 +71,12 @@ class AddProduct extends React.Component {
             update: (store, {data: {
                 addProduct
               }}) => {}
-          });
-        this.setState({
-          // [name]: value
-        });
+          }).then(
+            this
+            .props
+            .history
+            .push('/products')
+          )
       })
   }
 
@@ -139,7 +141,9 @@ class AddProduct extends React.Component {
                 floatingLabel={true}
                 onChange={this.handleInputChange}/>
             </div>
-            {this.ImageManager()}
+            <div className="flexColumn">
+              {this.ImageManager()}
+            </div>
           </div>
           {this.ButtonManager()}
         </Form>

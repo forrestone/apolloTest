@@ -8,10 +8,10 @@ class MainNavigation extends React.Component {
   render() {
     return (
       <Appbar>
-         <Link to='/products'>
+         <Link className="navigation" to='/products'>
           <Button>Prodotti</Button>
         </Link>
-        <Link to='/customers'>
+        <Link className="navigation" to='/customers'>
           <Button>Clienti</Button>
         </Link>
       </Appbar>

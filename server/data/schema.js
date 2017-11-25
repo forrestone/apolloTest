@@ -8,6 +8,7 @@ import {
   getProduct,
   addProduct,
   removeProduct,
+  getBatches,
   addBatch,
   removeBatch
 } from './resolvers';
@@ -63,6 +64,7 @@ export const schema = buildSchema(`
     customer(id : String!) : Customer
     products: [Product]
     product(barcode : String!) : Product
+    batches(barcode :String!) : [Lotto]
   }
 
   type Mutation {
@@ -70,8 +72,8 @@ export const schema = buildSchema(`
     removeCustomer(id : String!) : Boolean
     addProduct(input: ProductObj): Boolean
     removeProduct(barcode : String!) : Boolean
-    addBatch(input : LottoObj) : Product
-    removeBatch(barcode :String!, id: String) : Product
+    addBatch(input : LottoObj) : [Lotto]
+    removeBatch(barcode :String!, id: String) : [Lotto]
   }
 
 `);
@@ -85,7 +87,8 @@ export const rootValue = {
   product: (obj) => getProduct(obj.barcode),
   addProduct: (obj) => addProduct(obj.input),
   removeProduct: (obj) => removeProduct(obj.barcode),
-  addBatch :(obj)=> addBatch(),
+  batches : (obj) => getBatches(obj.barcode),
+  addBatch :(obj)=> addBatch(obj.input),
   removeBatch:(barcode, id)=> removeBatch(barcode, id)
 };
 

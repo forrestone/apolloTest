@@ -10,6 +10,7 @@ import AddCustomer from './components/AddCustomer';
 import MainNavigation from './components/MainNavigation';
 
 import './App.css'
+import Container from 'muicss/lib/react/container';
 
 import {
   ApolloClient,
@@ -71,6 +72,7 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
         <BrowserRouter>
+        <Container>
           <div className="App">
             <MainNavigation />
             <Switch>
@@ -83,6 +85,7 @@ class App extends Component {
               <Route component={NotFound} />
             </Switch>
           </div>
+          </Container>
         </BrowserRouter>
       </ApolloProvider>
     );
