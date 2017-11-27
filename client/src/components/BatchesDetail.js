@@ -219,48 +219,4 @@ mutation addBatch($barcode: String!, $id : String!, $quantita : Int, $scadenza :
 
 const BatchFormWithMutation = graphql(addBatchMutation)(BatchForm);
 
-/*
-const ProductDetailsQuery = graphql(productDetailsQuery, {
-  options: (props) => ({
-    variables: {
-      barcode: props.match.params.barcode
-    }
-  }),
-
-  props: (props) => {
-    return {data: props.data};
-  }
-
-});
-
-const multiple = compose(RemoveProductWithMutation)(ProductDetails);
-
-/*(graphql(removeProductMutation,{
-  options: (props) => ({
-    variables: {
-      productId: props.match.params.productId,
-    },
-  }),
-  props: (props) => {
-    return {
-      data: props.data,
-    };
-  }
-}))*/
-/*
-
-const batchDetailsQuery = gql `
-query BatchDetailsQuery($barcode : String!) {
-  batches(barcode: $barcode){
-    id
-    quantita
-    posizione
-    scadenza
-  }
-}
-`;
-
-const BatchDetailsQuery = graphql(batchDetailsQuery) 
-
-const multiple = compose(BatchDetailsQuery)(BatchesDetail);*/
 export default BatchesDetail

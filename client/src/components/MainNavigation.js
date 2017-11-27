@@ -7,6 +7,9 @@ class MainNavigation extends React.Component {
   render() {
     return (
       <Appbar>
+        <div className="logo navigation">
+          <img src="alfredo.svg" alt="logo"/>
+        </div>
          <Link className="navigation" to='/products'>
           <Button>Prodotti</Button>
         </Link>

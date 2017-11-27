@@ -34,7 +34,7 @@ networkInterface.use([
     },
   },
 ]);
-
+/*
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
   reconnect: true,
 });
@@ -52,19 +52,10 @@ function dataIdFromObject(result) {
   }
   return null;
 }
+*/
 
 const client = new ApolloClient({
-  networkInterface: networkInterfaceWithSubscriptions,
-  customResolvers: {
-    Query: {
-      product: (_, args) => {
-        return toIdValue(
-          dataIdFromObject({ __typename: 'Product', id: args['id'] })
-        );
-      },
-    },
-  },
-  dataIdFromObject,
+  networkInterface: networkInterface
 });
 
 class App extends Component {
@@ -76,6 +67,7 @@ class App extends Component {
           <div className="App">
             <MainNavigation />
             <Switch>
+              <Route exact path="/" component={ProductsListWithData} />
               <Route exact path="/products" component={ProductsListWithData} />
               <Route exact path="/customers" component={CustomersListWithData} />
               <Route exact path="/addCustomer" component={AddCustomer} />

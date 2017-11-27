@@ -12,6 +12,15 @@
   display: flex;
   align-items: center;
 }
+
+.mui-appbar .logo{
+  height: 50px;
+}
+
+.mui-appbar .logo img{
+  height: 100%;
+}
+
 .mui-appbar .navigation{
   padding: 0 20px;
 }
