@@ -12,7 +12,7 @@ import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import multer from 'multer';
 import path from 'path';
-import sqlite from 'sqlite';
+
 
 
 const PORT = 4000;
@@ -44,8 +44,30 @@ server.post('/files', (req, res) => {
 
 server.use('/files', express.static(path.join(__dirname, 'productsFiles')))
 
-/*DB initialization*/
 
+
+
+
+
+server.use('/graphiql', graphiqlExpress({
+  endpointURL: '/graphql'
+}));
+
+server.use('/graphql', bodyParser.json(), graphqlExpress({
+  graphiql: true,
+  pretty: true,
+  schema,
+  rootValue
+}));
+// We wrap the express server so that we can attach the WebSocket for subscriptions
+const ws = createServer(server);
+
+ws.listen(PORT, () => {
+  console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
+});
+
+/*DB initialization*/
+/*
 sqlite.open('keeper.sqlite', { cached: true })
 .then(() => sqlite.run('PRAGMA foreign_keys=on'))
 .then(() => sqlite.migrate())
@@ -87,3 +109,4 @@ sqlite.open('keeper.sqlite', { cached: true })
   });
 })
 .catch(error=>console.log(error))
+*/
