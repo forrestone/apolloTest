@@ -25,7 +25,7 @@ import {
 } from 'subscriptions-transport-ws';
 
 const networkInterface = createNetworkInterface({
-  uri: 'http://localhost:4000/graphql',
+  uri: `http://${window.location.hostname}:4000/graphql`,
 });
 networkInterface.use([
   {

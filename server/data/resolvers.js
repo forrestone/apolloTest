@@ -17,7 +17,8 @@ export const getProduct = (barcode) =>{
 }
 
 export const  addProduct = (args)=> {
-  let newProduct = new Product(args.name, args.description, args.barcode, args.imageUrl);
+  removeProduct(args.barcode);
+  let newProduct =new Product(args.name, args.description, args.barcode, args.imageUrl);
   products.push(newProduct);
   updateProductData()
   return newProduct;

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import NotFound from './NotFound';
 import AddCustomer from './AddCustomer'
+import {Redirect} from 'react-router';
 
 import {gql, graphql, compose} from 'react-apollo';
 
@@ -12,6 +13,7 @@ class CustomerDetails extends Component {
     super(props);
     this.state = {
       modify: false,
+      redirectTo : "",
       id : "",
       name: "",
       description: "",
@@ -32,6 +34,7 @@ class CustomerDetails extends Component {
 
   removeItem() {
     const $id = this.props.match.params.id
+    const that = this
     this
       .props
       .mutate({
@@ -43,13 +46,7 @@ class CustomerDetails extends Component {
           }
         }
       })
-      .then(data => {
-        // console.log(data);
-        this
-          .props
-          .history
-          .push('/customers')
-      });
+      .then(data =>that.setState({redirectTo:"/customers"}));
 
   }
 
@@ -71,6 +68,11 @@ class CustomerDetails extends Component {
         customer
       }
     } = this.props;
+    if (this.state.redirectTo != '') {
+      return (
+        <Redirect to={this.state.redirectTo}/>
+      )
+    }
     if (loading) {
       //  return <CustomerPreview customerId={match.params.customerId}/>;
       return <div>Loading</div>;

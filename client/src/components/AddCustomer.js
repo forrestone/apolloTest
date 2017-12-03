@@ -1,5 +1,6 @@
 import React from 'react';
 import {gql, graphql} from 'react-apollo';
+import {Redirect} from 'react-router';
 
 /** Styles */
 import Button from 'muicss/lib/react/button';
@@ -13,6 +14,7 @@ class AddCustomer extends React.Component {
     super(props);
     this.state = {
       modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
+      redirectTo : "",
       id : "",
       name : "",
       partitaIva : "",
@@ -38,6 +40,7 @@ class AddCustomer extends React.Component {
     event.preventDefault()
     //@todo check prod already exist https://www.npmjs.com/package/react-confirm
       let formData = this.state;
+      const that = this
       this
         .props
         .mutate({
@@ -45,12 +48,7 @@ class AddCustomer extends React.Component {
           update: (store, {data: {
               AddCustomer
             }}) => {}
-        }).then(
-          this
-          .props
-          .history
-          .push('/customers')
-        )
+        }).then(that.setState({redirectTo:"/customers"}))
   }
 
   handleInputChange(evt) {
@@ -70,7 +68,11 @@ class AddCustomer extends React.Component {
   }
 
   render() {
-
+    if (this.state.redirectTo != '') {
+      return (
+        <Redirect to={this.state.redirectTo}/>
+      )
+    }
     return (
       <Container>
         <h1 className="mui--text-center">{this.state.name}</h1>

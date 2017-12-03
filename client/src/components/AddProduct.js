@@ -2,7 +2,8 @@ import React from 'react';
 import {gql, graphql} from 'react-apollo';
 import ImageUpload from './ImageUpload'
 import axios from 'axios';
-import clientConfig from '../config.json';
+import clientConfig from '../config.js';
+import {Redirect} from 'react-router';
 
 /** Styles */
 import Button from 'muicss/lib/react/button';
@@ -18,6 +19,7 @@ class AddProduct extends React.Component {
     super(props);
     this.state = {
       modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
+      redirectTo : "",
       name: "",
       barcode: "",
       description: "",
@@ -54,27 +56,22 @@ class AddProduct extends React.Component {
   handleSubmit(event) {
     event.preventDefault()
     //@todo check prod already exist https://www.npmjs.com/package/react-confirm
+    let that = this;
     this
       .refs
       .imageupload
       ._handleSubmit()
       .then(filename => {
 
-        this.setState({image: filename});
+        that.setState({image: filename});
 
-        let formData = this.state;
-        this
-          .props
-          .mutate({
+        let formData = that.state;
+        that.props.mutate({
             variables: formData,
             update: (store, {data: {
                 addProduct
               }}) => {}
-          }).then(
-            this
-            .props
-            .history
-            .push('/products')
+          }).then((data)=>that.setState({redirectTo:"/products"})
           )
       })
   }
@@ -107,6 +104,12 @@ class AddProduct extends React.Component {
   }
 
   render() {
+
+    if (this.state.redirectTo != '') {
+      return (
+        <Redirect to={this.state.redirectTo}/>
+      )
+    }
 
     return (
       <Container>

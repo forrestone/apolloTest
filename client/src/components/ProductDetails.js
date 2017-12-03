@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import NotFound from './NotFound';
 import AddProduct from './AddProduct'
 import BatchesDetail from './BatchesDetail'
+import {Redirect} from 'react-router';
 
 import {gql, graphql, compose} from 'react-apollo';
 
@@ -13,6 +14,7 @@ class ProductDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirectTo:"",
       modify: false,
       name: "",
       barcode: "",
@@ -32,6 +34,7 @@ class ProductDetails extends Component {
 
   removeItem() {
     const $barcode = this.props.match.params.barcode
+    const that = this
     this
       .props
       .mutate({
@@ -43,13 +46,7 @@ class ProductDetails extends Component {
           }
         }
       })
-      .then(data => {
-        // console.log(data);
-        this
-          .props
-          .history
-          .push('/products')
-      });
+      .then(data => that.setState({redirectTo:"/products"}));
 
   }
 
@@ -77,6 +74,11 @@ class ProductDetails extends Component {
         product
       }
     } = this.props;
+    if (this.state.redirectTo != '') {
+      return (
+        <Redirect to={this.state.redirectTo}/>
+      )
+    }
     if (loading) {
       //  return <ProductPreview productId={match.params.productId}/>;
       return <div>Loading</div>;
