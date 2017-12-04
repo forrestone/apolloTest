@@ -141,7 +141,7 @@ class BatchForm extends Component{
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
-
+  
   handleSubmit(event) {
     event.preventDefault()
     this.props.mutate({

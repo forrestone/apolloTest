@@ -1,4 +1,4 @@
-import {buildSchema, GraphQLNonNull, GraphQLObjectType} from 'graphql';
+import {buildSchema, GraphQLNonNull, GraphQLObjectType,GraphQLEnumType} from 'graphql';
 import {
   getCustomers,
   getCustomer,
@@ -12,6 +12,7 @@ import {
   addBatch,
   removeBatch
 } from './resolvers';
+
 
 export const schema = buildSchema(`
   type Product {
@@ -29,10 +30,17 @@ export const schema = buildSchema(`
     imageUrl: String
   }
 
+  enum CustomerType{
+    Cliente
+    Fornitore
+    Entrambi
+  }
+
   type Customer {
     id: String!,
     name: String,
     partitaIva: String,
+    type : CustomerType,
     description: String,
     address : String
   }
@@ -41,6 +49,7 @@ export const schema = buildSchema(`
     id: String!,
     name: String,
     partitaIva: String,
+    type : CustomerType,
     description: String,
     address : String
   }

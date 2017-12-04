@@ -1,10 +1,12 @@
 import React from 'react';
-import {gql, graphql} from 'react-apollo';
+import {gql, graphql, compose} from 'react-apollo';
 import {Redirect} from 'react-router';
 
 /** Styles */
 import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
+import Select from 'muicss/lib/react/select';
+import Option from 'muicss/lib/react/option';
 import Form from 'muicss/lib/react/form';
 import Input from 'muicss/lib/react/input';
 import Textarea from 'muicss/lib/react/textarea';
@@ -13,11 +15,13 @@ class AddCustomer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
+      modify: typeof(this.props.modify)!=='undefined'? this.props.modify : true,
       redirectTo : "",
+      custmerTypes : [],
       id : "",
       name : "",
       partitaIva : "",
+      type : "",
       address : "",
       description : ""
     }
@@ -33,7 +37,11 @@ class AddCustomer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ modify: nextProps.modify });  
+
+    this.setState({ 
+      modify: nextProps.modify || this.state.modify,
+      custmerTypes : nextProps.getCustomerTypes.__type.enumValues
+    });
   }
 
   handleSubmit(event) {
@@ -43,7 +51,7 @@ class AddCustomer extends React.Component {
       const that = this
       this
         .props
-        .mutate({
+        .addCustomer({
           variables: formData,
           update: (store, {data: {
               AddCustomer
@@ -73,6 +81,7 @@ class AddCustomer extends React.Component {
         <Redirect to={this.state.redirectTo}/>
       )
     }
+
     return (
       <Container>
         <h1 className="mui--text-center">{this.state.name}</h1>
@@ -113,6 +122,14 @@ class AddCustomer extends React.Component {
                 disabled={!this.state.modify}
                 floatingLabel={true}
                 onChange={this.handleInputChange}/>
+              <Select 
+                name="type" 
+                defaultValue={this.state.type}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                >
+                {this.state.custmerTypes.map(c=><Option value={c.name} label={c.name} key={c.name}/>)}
+              </Select >
               <Textarea
                 label="Descrizione"
                 name="description"
@@ -129,12 +146,26 @@ class AddCustomer extends React.Component {
   }
 }
 
-const addCustomerMutation = gql `
-  mutation AddProduct($id: String!, $name: String!, $partitaIva : String, $address : String, $description : String) {
-    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, description : $description})
+
+
+const addCustomer = gql `
+  mutation AddCustomer($id: String!, $name: String!, $partitaIva : String, $address : String, $description : String, $type : CustomerType) {
+    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, type : $type, description : $description})
   }
 `;
+const getCustomerTypes = gql `
+  query getTypes{
+    __type(name:"CustomerType"){
+      enumValues{
+        name
+      }
+    }
+  } 
+`
 
-const AddCustomerWithMutation = graphql(addCustomerMutation)(AddCustomer);
+const AddCustomerWithMutation = compose(
+  graphql(addCustomer, {
+    name :'addCustomer'
+  }), graphql(getCustomerTypes, {name: 'getCustomerTypes'}))(AddCustomer);
 
 export default AddCustomerWithMutation;

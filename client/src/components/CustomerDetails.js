@@ -112,6 +112,7 @@ const customerDetailsQuery = gql `
       id
       name
       description
+      type
       address
       partitaIva
     }

@@ -57,7 +57,7 @@ export const getCustomer = (id) =>{
 }
 
 export const  addCustomer = (args)=> {
-  let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.description);
+  let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.type, args.description);
   customers.push(newCustomer);
   updateCustomerData()
   return newCustomer;
