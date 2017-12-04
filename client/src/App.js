@@ -15,8 +15,7 @@ import Container from 'muicss/lib/react/container';
 import {
   ApolloClient,
   ApolloProvider,
-  createNetworkInterface,
-  toIdValue,
+  createNetworkInterface
 } from 'react-apollo';
 
 import {
@@ -34,8 +33,8 @@ networkInterface.use([
     },
   },
 ]);
-/*
-const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
+
+const wsClient = new SubscriptionClient(`ws://${window.location.hostname}:4000/subscriptions`, {
   reconnect: true,
 });
 
@@ -43,7 +42,7 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
   networkInterface,
   wsClient
 );
-
+/*
 function dataIdFromObject(result) {
   if (result.__typename) {
     if (result.id !== undefined) {
@@ -55,7 +54,7 @@ function dataIdFromObject(result) {
 */
 
 const client = new ApolloClient({
-  networkInterface: networkInterface
+  networkInterface: networkInterfaceWithSubscriptions
 });
 
 class App extends Component {

@@ -105,7 +105,7 @@ class AddProduct extends React.Component {
 
   render() {
 
-    if (this.state.redirectTo != '') {
+    if (this.state.redirectTo !== '') {
       return (
         <Redirect to={this.state.redirectTo}/>
       )

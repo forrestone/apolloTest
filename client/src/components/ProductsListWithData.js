@@ -9,6 +9,21 @@ import Container from 'muicss/lib/react/container';
 import './Styles/ProductsListWithData.css'
 
 class ProductsList extends Component {
+  componentWillMount(){
+    this.props.data.subscribeToMore({
+      document : messagesSubscription,
+      updateQuery : (prev, {subscriptionData})=>{
+        if (!subscriptionData.data) {
+          return prev;
+        }
+        const newObj = subscriptionData.data.productChanged;
+        let obj = Object.assign({}, prev);
+        obj.products = obj.products.map(c=>c.barcode!==newObj.barcode?c:newObj)
+        return obj;
+      }
+    })
+  }
+
   render() {
     const {
       data: {
@@ -80,6 +95,19 @@ class ProductsList extends Component {
     );
   };
 };
+
+const messagesSubscription = gql `
+subscription productChanged {
+  productChanged {
+    name
+    barcode
+    lotti{
+      quantita
+      posizione
+    }
+  }
+}
+`;
 
 export const productsListQuery = gql `
   query ProductsListQuery {

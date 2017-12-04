@@ -68,7 +68,7 @@ class CustomerDetails extends Component {
         customer
       }
     } = this.props;
-    if (this.state.redirectTo != '') {
+    if (this.state.redirectTo !== '') {
       return (
         <Redirect to={this.state.redirectTo}/>
       )

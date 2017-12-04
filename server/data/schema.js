@@ -1,20 +1,8 @@
-import {buildSchema, GraphQLNonNull, GraphQLObjectType,GraphQLEnumType} from 'graphql';
-import {
-  getCustomers,
-  getCustomer,
-  addCustomer,
-  removeCustomer,
-  getProducts,
-  getProduct,
-  addProduct,
-  removeProduct,
-  getBatches,
-  addBatch,
-  removeBatch
-} from './resolvers';
+import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
+import {resolvers} from './resolvers';
 
 
-export const schema = buildSchema(`
+const typeDefs = `
   type Product {
     name: String,
     description: String,
@@ -29,6 +17,7 @@ export const schema = buildSchema(`
     barcode: String!,
     imageUrl: String
   }
+
 
   enum CustomerType{
     Cliente
@@ -86,30 +75,10 @@ export const schema = buildSchema(`
     removeBatch(barcode :String!, id: String) : [Lotto]
   }
 
-`);
-
-export const rootValue = {
-  customers: (obj) => getCustomers(),
-  customer: (obj) => getCustomer(obj.id),
-  addCustomer: (obj) => addCustomer(obj.input),
-  removeCustomer : (obj) =>removeCustomer(obj.id),
-  products: (obj) => getProducts(),
-  product: (obj) => getProduct(obj.barcode),
-  addProduct: (obj) => addProduct(obj.input),
-  removeProduct: (obj) => removeProduct(obj.barcode),
-  batches : (obj) => getBatches(obj.barcode),
-  addBatch :(obj)=> addBatch(obj.input),
-  removeBatch:(barcode, id)=> removeBatch(barcode, id)
-};
-
-/*
-export const rootValue = {
-  customers: (obj, ctx) => getCustomers(ctx),
-  customer: (obj, ctx) => getCustomer(obj.id, ctx),
-  addCustomer: (obj, ctx) => addCustomer(obj.input, ctx),
-  removeCustomer : (obj,ctx) =>removeCustomer(obj.id,ctx),
-  products: (obj, ctx) => getProducts(ctx),
-  product: (obj, ctx) => getProduct(obj.barcode, ctx),
-  addProduct: (obj, ctx) => addProduct(obj.input, ctx),
-  removeProduct: (obj, ctx) => removeProduct(obj.barcode, ctx)
-};*/
+  type Subscription {
+    productChanged : Product
+  }
+`;
+ 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+export { schema };

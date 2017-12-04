@@ -6,14 +6,19 @@ import {
 } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { schema, rootValue } from './data/schema';
+import { schema } from './data/schema';
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import multer from 'multer';
 import path from 'path';
+import { networkInterfaces } from 'os'
 
+const getLocalExternalIp = () => [].concat.apply([], Object.values(networkInterfaces()))
+  .filter(details => details.family === 'IPv4' && !details.internal)
+  .pop().address
 
+const LocalExternalIp = getLocalExternalIp();
 
 const PORT = 4000;
 const server = express();
@@ -44,26 +49,30 @@ server.post('/files', (req, res) => {
 
 server.use('/files', express.static(path.join(__dirname, 'productsFiles')))
 
-
-
-
-
+server.use('/graphql', bodyParser.json(), graphqlExpress({
+  schema
+}));
 
 server.use('/graphiql', graphiqlExpress({
-  endpointURL: '/graphql'
+  endpointURL: '/graphql',
+  subscriptionsEndpoint: `ws://localhost:4000/subscriptions`
+  //subscriptionsEndpoint: `ws://${LocalExternalIp}:4000/subscriptions`
 }));
 
-server.use('/graphql', bodyParser.json(), graphqlExpress({
-  graphiql: true,
-  pretty: true,
-  schema,
-  rootValue
-}));
 // We wrap the express server so that we can attach the WebSocket for subscriptions
 const ws = createServer(server);
 
 ws.listen(PORT, () => {
-  console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
+  console.log(`GraphQL Server is now running on http://${LocalExternalIp}:${PORT}`);
+});
+
+new SubscriptionServer({
+  execute,
+  subscribe,
+  schema
+}, {
+  server: ws,
+  path: '/subscriptions',
 });
 
 /*DB initialization*/

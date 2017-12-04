@@ -2,7 +2,7 @@
 import { withFilter } from 'graphql-subscriptions';
 import faker from 'faker';
 */
-
+import { PubSub, withFilter } from 'graphql-subscriptions';
 import Customer from './customer';
 import {Product, Batch} from './product';
 import fs from 'fs';
@@ -10,60 +10,65 @@ import productsData from '../json-storage/product.json';
 import customersData from '../json-storage/customer.json';
 
 let products = productsData;
-export const getProducts = ()=>products
+const productChangeSubscription = new PubSub();
 
-export const getProduct = (barcode) =>{
+const getProducts = ()=>products
+
+const getProduct = (barcode) =>{
   return products.find(product => product.barcode === barcode);
 }
 
-export const  addProduct = (args)=> {
+const  addProduct = (args)=> {
   removeProduct(args.barcode);
   let newProduct =new Product(args.name, args.description, args.barcode, args.imageUrl);
   products.push(newProduct);
   updateProductData()
+  productChangeSubscription.publish('productChanged',{productChanged : newProduct})
   return newProduct;
 }
 
-export const removeProduct = (barcode)=>{
+const removeProduct = (barcode)=>{
   let itemToRemove = products.find(product => product.barcode === barcode);
   products = products.filter((product) => product.barcode !== barcode)
   updateProductData()
   return products
 }
 
-export const getBatches = (barcode)=>{
+const getBatches = (barcode)=>{
   return getProduct(barcode).lotti
 }
 
-export const  addBatch = (args)=> {
+const  addBatch = (args)=> {
   let product = getProduct(args.barcode)
   product.lotti.push(new Batch(args.id, args.quantita, args.posizione,args.scadenza))
   updateProductData()
+  productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti;
 }
 
-export const removeBatch = (args)=>{
-  let product = getProduct(args.barcode)
-  product.lotti = product.lotti.filter((batch) => batch.id !== args.id)
+const removeBatch = (barcode, id)=>{
+  let product = getProduct(barcode)
+  product.lotti = product.lotti.filter((batch) => batch.id !== id)
   updateProductData()
+  productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti
 }
 
 let customers = customersData;
-export const getCustomers = ()=>customers
+const getCustomers = ()=>customers
 
-export const getCustomer = (id) =>{
+const getCustomer = (id) =>{
   return customers.find(customer => customer.id === id);
 }
 
-export const  addCustomer = (args)=> {
+const  addCustomer = (args)=> {
   let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.type, args.description);
   customers.push(newCustomer);
   updateCustomerData()
   return newCustomer;
 }
 
-export const removeCustomer = (id) =>{
+const removeCustomer = (id) =>{
   let customerToRemove = customers.find(customer => customer.id === id);
   customers = customers.filter((customer) => customer.id !== id)
   updateCustomerData()
@@ -84,34 +89,29 @@ const updateCustomerData = () => {
   })
 }
 
-/*
-function addFakeProduct(args) {
-  lastProductId++;
-  const newProduct = {
-    id:  String(lastProductId),
-    name: args.name,
-    barcode : args.barcode,
-    image : args.image,
-    dataScadenza : args.dataScadenza
-  };
-  products.push(newProduct);
-}
-*/
-/*
-// Add seed for consistent random data
-faker.seed(9);
-for (let i = 0; i < 10; i++) {
-  addFakeProduct({
-    name: faker.random.word(),
-    barcode : faker.phone.phoneNumber(),
-    image : faker.image.imageUrl(),
-    dataScadenza : ''+faker.date.future()
-  });
-}*/
-/*
-// generate second channel for initial channel list view
-addChannel('channel2');
-*/
-/*
-const pubsub = new PubSub();
-*/
+
+export const resolvers = {
+  Query : {
+    customers: () => getCustomers(),
+    customer: (root, {id}) => getCustomer(id),
+    products: () => getProducts(),
+    product: (root, {barcode}) => getProduct(barcode),
+    batches : (root, {barcode}) => getBatches(barcode)
+  },
+  Mutation : {
+    addCustomer: (root, {input}) => addCustomer(input),
+    removeCustomer : (root, {id}) =>removeCustomer(id),
+    addProduct: (root, {input}) => addProduct(input),
+    removeProduct: (root, {barcode}) => removeProduct(barcode),
+    addBatch :(root, {input})=> addBatch(input),
+    removeBatch:(root, {barcode, id})=>{
+      return removeBatch(barcode, id)
+    } 
+  },
+  Subscription : {
+    productChanged : {
+      subscribe: ()=>productChangeSubscription.asyncIterator('productChanged')
+    }
+  }
+  
+};
