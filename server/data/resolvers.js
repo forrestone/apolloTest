@@ -19,9 +19,12 @@ const getProduct = (barcode) =>{
 }
 
 const  addProduct = (args)=> {
-  removeProduct(args.barcode);
   let newProduct =new Product(args.name, args.description, args.barcode, args.imageUrl);
-  products.push(newProduct);
+  const productExist = products.some(p=>p.barcode === args.barcode)
+  products = productExist ? 
+    products.map(p=>p.barcode!==newProduct.barcode?p:newProduct)
+    :
+    products.concat(newProduct);
   updateProductData()
   productChangeSubscription.publish('productChanged',{productChanged : newProduct})
   return newProduct;
@@ -62,8 +65,13 @@ const getCustomer = (id) =>{
 }
 
 const  addCustomer = (args)=> {
-  let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.type, args.description);
-  customers.push(newCustomer);
+  let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.type, args.description)
+  const customerExist = customers.some(c=>c.id === args.id)
+  customers = customerExist ? 
+      customers.map(c=>c.id!==newCustomer.id?c:newCustomer)
+    :
+      customers.concat(newCustomer);
+  
   updateCustomerData()
   return newCustomer;
 }

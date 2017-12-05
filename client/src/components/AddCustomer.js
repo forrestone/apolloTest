@@ -122,14 +122,27 @@ class AddCustomer extends React.Component {
                 disabled={!this.state.modify}
                 floatingLabel={true}
                 onChange={this.handleInputChange}/>
-              <Select 
-                name="type" 
-                defaultValue={this.state.type}
-                disabled={!this.state.modify}
-                onChange={this.handleInputChange}
-                >
-                {this.state.custmerTypes.map(c=><Option value={c.name} label={c.name} key={c.name}/>)}
-              </Select >
+                {this.state.modify?
+                  <Select 
+                  name="type" 
+                  defaultValue={this.state.type}
+                  disabled={!this.state.modify}
+                  onChange={this.handleInputChange}
+                  required={true}
+                  >
+                    {this.state.custmerTypes.map(c=><Option value={c.name} label={c.name} key={c.name}/>)}
+                  </Select >
+                  :
+                  <Input
+                  label="Tipo"
+                  name="type"
+                  type="text"
+                  value={this.state.type}
+                  disabled={!this.state.modify}
+                  floatingLabel={true}
+                  required={true}/>
+                }
+              
               <Textarea
                 label="Descrizione"
                 name="description"

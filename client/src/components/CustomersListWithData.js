@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Link} from 'react-router-dom'
 
 import {gql, graphql} from 'react-apollo';
@@ -6,15 +6,19 @@ import {gql, graphql} from 'react-apollo';
 /*Styles*/
 import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
+import Tabs from 'muicss/lib/react/tabs';
+import Tab from 'muicss/lib/react/tab';
 import './Styles/ProductsListWithData.css'
 
-const CustomersList = ({
-  data: {
-    loading,
-    error,
-    customers
-  }
-}) => {
+class CustomersList extends Component{
+  render (){
+    const {
+      data: {
+        loading,
+        error,
+        customers
+      }
+    } = this.props;
   if (loading) {
     return <p>Loading ...</p>;
   }
@@ -24,6 +28,7 @@ const CustomersList = ({
 
   return (
     <Container>
+      <SelectionTabs />
       <div className="customersList tableList" data-component-name="customersList">
         <div className="header">
           <div className="cell">
@@ -36,7 +41,7 @@ const CustomersList = ({
             Indirizzo
           </div>
           <div className="cell">
-            Descrizione
+            Tipo
           </div>
         </div>
         {customers.map(cm => {
@@ -55,7 +60,7 @@ const CustomersList = ({
               </Link>
               <span className="cell">{cm.partitaIva}</span>
               <span className="cell">{cm.address}</span>
-              <span className="cell">{cm.description}</span>
+              <span className="cell">{cm.type}</span>
             </div>
           )
         })}
@@ -67,6 +72,7 @@ const CustomersList = ({
       </Link>
     </Container>
   );
+}
 };
 
 export const customersListQuery = gql `
@@ -76,10 +82,24 @@ export const customersListQuery = gql `
       name
       partitaIva
       address
-      description
+      type
     }
   }
 `;
+
+class SelectionTabs extends Component{
+
+  render(){
+    return (
+      <Tabs defaultSelectedIndex={1}>
+        <Tab value="pane-1" label="Clienti" onActive={this.onActive}></Tab>
+        <Tab value="pane-2" label="Fornitori"></Tab>
+      </Tabs>
+    )
+  }
+};
+
+
 
 export default graphql(customersListQuery, {
   options: {
