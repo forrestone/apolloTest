@@ -39,3 +39,5 @@ jspm_packages
 # Vscode Internal
 
 .vscode
+server/json-storage/product.json
+server/json-storage/customer.json
