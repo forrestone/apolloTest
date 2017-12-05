@@ -28,7 +28,7 @@ class CustomersList extends Component{
 
   return (
     <Container>
-      <SelectionTabs />
+      <SelectionTabsWithQuery />
       <div className="customersList tableList" data-component-name="customersList">
         <div className="header">
           <div className="cell">
@@ -90,15 +90,39 @@ export const customersListQuery = gql `
 class SelectionTabs extends Component{
 
   render(){
+    const {
+      data: {
+        loading,
+        error,
+        __type
+      }
+    } = this.props;
+
+    if (loading) {
+      return <p>Loading ...</p>;
+    }
+    if (error) {
+      return <p>{error.message}</p>;
+    }
+
     return (
       <Tabs defaultSelectedIndex={1}>
-        <Tab value="pane-1" label="Clienti" onActive={this.onActive}></Tab>
-        <Tab value="pane-2" label="Fornitori"></Tab>
+        {__type.enumValues.map(t=><Tab value={t.name} label={t.name}/>)}
       </Tabs>
     )
   }
 };
 
+const getCustomerTypes = gql `
+query getTypes{
+  __type(name:"CustomerType"){
+    enumValues{
+      name
+    }
+  }
+} 
+`
+const SelectionTabsWithQuery = graphql(getCustomerTypes)(SelectionTabs)
 
 
 export default graphql(customersListQuery, {
