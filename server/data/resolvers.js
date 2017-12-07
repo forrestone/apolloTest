@@ -48,8 +48,8 @@ const getBatches = (id)=>{
 }
 
 const  addBatch = (args)=> {
-  let product = getProduct(args.id)
-  product.lotti.push(new Batch(args.id, args.quantita, args.posizione,args.scadenza))
+  let product = getProduct(args.productID)
+  product.lotti.push(new Batch(args.id, args.quantita, args.posizione, args.fornitoreID, args.scadenza))
   updateProductData()
   productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti;
@@ -66,8 +66,8 @@ const removeBatch = (prodId, id)=>{
 /**CLIENTI**/
 let customersObject = customersImport
 
-const getCustomers = ()=>{
-  return customersObject.items
+const getCustomers = (type)=>{
+   return  type ? customersObject.items.filter(c=>c.type.includes(type)): customersObject.items
 }
 
 const getCustomer = (id) =>{
