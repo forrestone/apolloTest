@@ -34,6 +34,7 @@ class CustomersList extends Component {
     }
   }
 
+<<<<<<< HEAD
   render() {
     const {
       CustomerTypes,
@@ -65,6 +66,24 @@ class CustomersList extends Component {
             <div className="cell">
               Tipo
             </div>
+=======
+  return (
+    <Container>
+      <SelectionTabsWithQuery />
+      <div className="customersList tableList" data-component-name="customersList">
+        <div className="header">
+          <div className="cell">
+            Name
+          </div>
+          <div className="cell">
+            partitaIva
+          </div>
+          <div className="cell">
+            Indirizzo
+          </div>
+          <div className="cell">
+            Tipo
+>>>>>>> 2d2737f555f8cf800a35325f0a3916eea39981cb
           </div>
           {CustomersList.customers.map((cm) => {
             const isVisible =cm.type.some(t=>t===visibleType);
@@ -107,6 +126,7 @@ const customersListQuery = gql `
   }
 `;
 
+<<<<<<< HEAD
 const getCustomerTypes = gql `
 query getTypes{
   __type(name:"CustomerType"){
@@ -116,6 +136,44 @@ query getTypes{
   }
 } 
 `;
+=======
+class SelectionTabs extends Component{
+
+  render(){
+    const {
+      data: {
+        loading,
+        error,
+        __type
+      }
+    } = this.props;
+
+    if (loading) {
+      return <p>Loading ...</p>;
+    }
+    if (error) {
+      return <p>{error.message}</p>;
+    }
+
+    return (
+      <Tabs defaultSelectedIndex={1}>
+        {__type.enumValues.map(t=><Tab value={t.name} label={t.name}/>)}
+      </Tabs>
+    )
+  }
+};
+
+const getCustomerTypes = gql `
+query getTypes{
+  __type(name:"CustomerType"){
+    enumValues{
+      name
+    }
+  }
+} 
+`
+const SelectionTabsWithQuery = graphql(getCustomerTypes)(SelectionTabs)
+>>>>>>> 2d2737f555f8cf800a35325f0a3916eea39981cb
 
 
 export default compose(
