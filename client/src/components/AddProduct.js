@@ -20,10 +20,10 @@ class AddProduct extends React.Component {
     this.state = {
       modify: typeof(this.props.modify)!=='undefined'? this.props.modify: true,
       redirectTo : "",
+      id : undefined,
       name: "",
       barcode: "",
-      description: "",
-      imageUrl: ""
+      description: ""
     }
     if (this.props.product) {
       Object.assign(this.state, this.props.product)
@@ -118,6 +118,14 @@ class AddProduct extends React.Component {
         <Form className="AddProduct customForm" onSubmit={this.handleSubmit}>
           <div className="flexRow">
             <div className="flexColumn">
+            <Input
+                label="Id"
+                name="id"
+                type="number"
+                value={this.state.id}
+                disabled={true}
+                floatingLabel={true}
+                />
               <Input
                 label="Nome Prodotto"
                 name="name"
@@ -156,8 +164,14 @@ class AddProduct extends React.Component {
 }
 
 const addProductMutation = gql `
-  mutation AddProduct($name: String!, $barcode : String!, $image : String, $description : String) {
-    addProduct(input : {name: $name, barcode : $barcode, imageUrl : $image, description : $description})
+  mutation AddProduct($id : Int, $name: String!, $barcode : String!, $image : String, $description : String) {
+    addProduct(input : {id : $id, name: $name, barcode : $barcode, imageUrl : $image, description : $description}){
+      id
+      name
+      description
+      barcode
+      imageUrl
+    }
   }
 `;
 

@@ -6,95 +6,92 @@ import { PubSub, withFilter } from 'graphql-subscriptions';
 import Customer from './customer';
 import {Product, Batch} from './product';
 import fs from 'fs';
-import productsData from '../json-storage/product.json';
-import customersData from '../json-storage/customer.json';
+import productImport from '../json-storage/product.json';
+import customersImport from '../json-storage/customer.json';
 
-let products = productsData;
+const productsFile = './json-storage/product.json'
+const customersFile = './json-storage/customer.json'
+
 const productChangeSubscription = new PubSub();
 
-const getProducts = ()=>products
+/**PRODOTTI**/
+let productObject = productImport;
 
-const getProduct = (barcode) =>{
-  return products.find(product => product.barcode === barcode);
+const getProducts = ()=>productObject.items
+
+const getProduct = (id) =>{
+  return productObject.items.find(product => product.id === id);
 }
 
 const  addProduct = (args)=> {
-  let newProduct =new Product(args.name, args.description, args.barcode, args.imageUrl);
-  const productExist = products.some(p=>p.barcode === args.barcode)
-  products = productExist ? 
-    products.map(p=>p.barcode!==newProduct.barcode?p:newProduct)
-    :
-    products.concat(newProduct);
+  let newProduct =new Product(args.id, args.name, args.description, args.barcode, args.imageUrl);
+  if(productObject.items.some(p=>p.id === args.id)){
+     productObject.items.map(p=>p.id!==newProduct.id?p:newProduct)
+  }else{
+    newProduct.id=++productObject.currentIndex
+    productObject.items = productObject.items.concat(newProduct)
+  }
   updateProductData()
   productChangeSubscription.publish('productChanged',{productChanged : newProduct})
   return newProduct;
 }
 
-const removeProduct = (barcode)=>{
-  let itemToRemove = products.find(product => product.barcode === barcode);
-  products = products.filter((product) => product.barcode !== barcode)
+const removeProduct = (id)=>{
+  let productToRemove = productObject.items.find(product => product.id === id);
+  productObject.items = productObject.items.filter((product) => product.id !== id)
   updateProductData()
-  return products
+  return productToRemove
 }
 
-const getBatches = (barcode)=>{
-  return getProduct(barcode).lotti
+const getBatches = (id)=>{
+  return getProduct(id).lotti
 }
 
 const  addBatch = (args)=> {
-  let product = getProduct(args.barcode)
+  let product = getProduct(args.id)
   product.lotti.push(new Batch(args.id, args.quantita, args.posizione,args.scadenza))
   updateProductData()
   productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti;
 }
 
-const removeBatch = (barcode, id)=>{
-  let product = getProduct(barcode)
+const removeBatch = (prodId, id)=>{
+  let product = getProduct(prodId)
   product.lotti = product.lotti.filter((batch) => batch.id !== id)
   updateProductData()
   productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti
 }
 
-let customers = customersData;
-const getCustomers = ()=>customers
+/**CLIENTI**/
+let customersObject = customersImport
+
+const getCustomers = ()=>{
+  return customersObject.items
+}
 
 const getCustomer = (id) =>{
-  return customers.find(customer => customer.id === id);
+  return customersObject.items.find(customer => customer.id === id);
 }
 
 const  addCustomer = (args)=> {
   let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.type, args.description)
-  const customerExist = customers.some(c=>c.id === args.id)
-  customers = customerExist ? 
-      customers.map(c=>c.id!==newCustomer.id?c:newCustomer)
-    :
-      customers.concat(newCustomer);
-  
+  if(customersObject.items.some(c=>c.id === args.id)){
+    customersObject.items = customersObject.items.map(c=>c.id!==newCustomer.id?c:newCustomer)
+  }else{
+    newCustomer.id=++customersObject.currentIndex
+    customersObject.items = customersObject.items.concat(newCustomer);
+  }
+   
   updateCustomerData()
   return newCustomer;
 }
 
 const removeCustomer = (id) =>{
-  let customerToRemove = customers.find(customer => customer.id === id);
-  customers = customers.filter((customer) => customer.id !== id)
+  let customerToRemove = customersObject.items.find(customer => customer.id === id);
+  customersObject.items = customersObject.items.filter((customer) => customer.id !== id)
   updateCustomerData()
   return customerToRemove
-}
-
-
-const updateProductData = () => {
-  fs.writeFile("./json-storage/product.json", JSON.stringify(products), (err)=>{
-    if(err) throw err;
-    console.log('the file has been saved')
-  })
-}
-const updateCustomerData = () => {
-  fs.writeFile("./json-storage/customer.json", JSON.stringify(customers), (err)=>{
-    if(err) throw err;
-    console.log('the file has been saved')
-  })
 }
 
 
@@ -103,17 +100,17 @@ export const resolvers = {
     customers: () => getCustomers(),
     customer: (root, {id}) => getCustomer(id),
     products: () => getProducts(),
-    product: (root, {barcode}) => getProduct(barcode),
-    batches : (root, {barcode}) => getBatches(barcode)
+    product: (root, {id}) => getProduct(id),
+    batches : (root, {id}) => getBatches(id)
   },
   Mutation : {
     addCustomer: (root, {input}) => addCustomer(input),
     removeCustomer : (root, {id}) =>removeCustomer(id),
     addProduct: (root, {input}) => addProduct(input),
-    removeProduct: (root, {barcode}) => removeProduct(barcode),
+    removeProduct: (root, {id}) => removeProduct(id),
     addBatch :(root, {input})=> addBatch(input),
-    removeBatch:(root, {barcode, id})=>{
-      return removeBatch(barcode, id)
+    removeBatch:(root, {prodId, id})=>{
+      return removeBatch(prodId, id)
     } 
   },
   Subscription : {
@@ -123,3 +120,19 @@ export const resolvers = {
   }
   
 };
+
+
+const saveToFile = (filename, object) => {
+  fs.writeFile(filename, JSON.stringify(object), (err)=>{
+    if(err) throw err;
+    console.log('the file has been saved')
+  })
+}
+
+const updateProductData = () => {
+  saveToFile(productsFile,productObject)
+}
+
+const updateCustomerData = () => {
+  saveToFile(customersFile,customersObject)
+}

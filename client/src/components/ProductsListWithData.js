@@ -68,7 +68,7 @@ class ProductsList extends Component {
             }
             return (
               <div
-                key={pr.barcode}
+                key={pr.id}
                 className={'row ' + (pr.barcode < 0
                 ? 'optimistic'
                 : '')}>
@@ -76,7 +76,7 @@ class ProductsList extends Component {
                   className="cell"
                   to={pr.barcode < 0
                   ? `/`
-                  : `product/${pr.barcode}`}>
+                  : `product/${pr.id}`}>
                   {pr.name}
                 </Link>
                 <span className="cell">{pr.barcode}</span>
@@ -99,6 +99,7 @@ class ProductsList extends Component {
 const messagesSubscription = gql `
 subscription productChanged {
   productChanged {
+    id
     name
     barcode
     lotti{
@@ -112,6 +113,7 @@ subscription productChanged {
 export const productsListQuery = gql `
   query ProductsListQuery {
     products {
+      id
       name
       barcode
       lotti{

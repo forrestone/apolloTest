@@ -72,7 +72,7 @@ class App extends Component {
               <Route exact path="/addCustomer" component={AddCustomer} />
               <Route exact path="/customer/:id" component={CustomerDetails} />
               <Route exact path="/addProduct" component={AddProduct} />
-              <Route path="/product/:barcode" component={ProductDetails} />
+              <Route path="/product/:id" component={ProductDetails} />
               <Route component={NotFound} />
             </Switch>
           </div>

@@ -5,9 +5,8 @@ import {Redirect} from 'react-router';
 /** Styles */
 import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
-import Select from 'muicss/lib/react/select';
-import Option from 'muicss/lib/react/option';
 import Form from 'muicss/lib/react/form';
+import Checkbox from 'muicss/lib/react/checkbox';
 import Input from 'muicss/lib/react/input';
 import Textarea from 'muicss/lib/react/textarea';
 
@@ -17,11 +16,11 @@ class AddCustomer extends React.Component {
     this.state = {
       modify: typeof(this.props.modify)!=='undefined'? this.props.modify : true,
       redirectTo : "",
-      custmerTypes : [],
-      id : "",
+      customerTypes : [],
+      id : undefined,
       name : "",
       partitaIva : "",
-      type : "",
+      type : [],
       address : "",
       description : ""
     }
@@ -34,19 +33,28 @@ class AddCustomer extends React.Component {
     this.handleInputChange = this
       .handleInputChange
       .bind(this);
+
+    this.handleCheckboxChange = this
+      .handleCheckboxChange
+      .bind(this);
+      
   }
 
   componentWillReceiveProps(nextProps) {
 
     this.setState({ 
       modify: nextProps.modify || this.state.modify,
-      custmerTypes : nextProps.getCustomerTypes.__type.enumValues
+      customerTypes : nextProps.getCustomerTypes.__type.enumValues
     });
   }
 
   handleSubmit(event) {
     event.preventDefault()
     //@todo check prod already exist https://www.npmjs.com/package/react-confirm
+    if(this.state.type.length === 0){
+      alert('Seleziona il tipo di cliente')
+      return;
+    }
       let formData = this.state;
       const that = this
       this
@@ -54,8 +62,11 @@ class AddCustomer extends React.Component {
         .addCustomer({
           variables: formData,
           update: (store, {data: {
-              AddCustomer
-            }}) => {}
+              addCustomer
+            }}) => {
+              store.data[`Customer:${addCustomer.id}`] = addCustomer
+              return store
+            }
         }).then(that.setState({redirectTo:"/customers"}))
   }
 
@@ -63,6 +74,18 @@ class AddCustomer extends React.Component {
     this.setState({
       [evt.target.name]: evt.target.value
     });
+  }
+
+  handleCheckboxChange(evt) {
+    let newType = evt.target.checked ? 
+    this.state.type.concat(evt.target.value)
+    :
+    this.state.type.filter(t=>t!==evt.target.value)
+  //[... new Set(newType)] torna un array di valori unici 
+    this.setState({
+      type: [... new Set(newType)]
+    });
+
   }
 
   ButtonManager() {
@@ -91,12 +114,10 @@ class AddCustomer extends React.Component {
             <Input
                 label="Id"
                 name="id"
-                type="text"
+                type="number"
                 value={this.state.id}
-                disabled={!this.state.modify}
-                onChange={this.handleInputChange}
-                floatingLabel={true}
-                required={true}/>
+                disabled={true}
+                floatingLabel={true}/>
               <Input
                 label="Nome"
                 name="name"
@@ -123,15 +144,15 @@ class AddCustomer extends React.Component {
                 floatingLabel={true}
                 onChange={this.handleInputChange}/>
                 {this.state.modify?
-                  <Select 
-                  name="type" 
-                  defaultValue={this.state.type}
-                  disabled={!this.state.modify}
-                  onChange={this.handleInputChange}
-                  required={true}
-                  >
-                    {this.state.custmerTypes.map(c=><Option value={c.name} label={c.name} key={c.name}/>)}
-                  </Select >
+                  this.state.customerTypes.map(c=>
+                  <Checkbox 
+                    name={`type-${c.name}`} 
+                    label={c.name} 
+                    value={c.name} 
+                    key={c.name}
+                    checked = {this.state.type.some(t=>t===c.name)}
+                    onChange={this.handleCheckboxChange}/>
+                )
                   :
                   <Input
                   label="Tipo"
@@ -162,8 +183,15 @@ class AddCustomer extends React.Component {
 
 
 const addCustomer = gql `
-  mutation AddCustomer($id: String!, $name: String!, $partitaIva : String, $address : String, $description : String, $type : CustomerType) {
-    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, type : $type, description : $description})
+  mutation AddCustomer($id: Int, $name: String!, $partitaIva : String, $address : String, $description : String, $type : [CustomerType]!) {
+    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, type : $type, description : $description}){
+      id
+      name
+      partitaIva
+      type
+      description
+      address
+    }
   }
 `;
 const getCustomerTypes = gql `

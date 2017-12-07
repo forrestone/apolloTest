@@ -44,6 +44,12 @@ class CustomerDetails extends Component {
             id: $id,
             __typename: 'Customer'
           }
+        },
+        update : (store, {data: {
+          removeCustomer
+        }})=> {
+          store.data[`Customer:${removeCustomer.id}`] = undefined
+          return store
         }
       })
       .then(data =>that.setState({redirectTo:"/customers"}));
@@ -93,8 +99,10 @@ class CustomerDetails extends Component {
 }
 
 const removeCustomerMutation = gql `
-  mutation RemoveCustomer($id:  String!) {
-    removeCustomer(id: $id)
+  mutation RemoveCustomer($id:  Int!) {
+    removeCustomer(id: $id){
+      id
+    }
     }
 `;
 
@@ -107,7 +115,7 @@ const RemoveCustomerWithMutation = graphql(removeCustomerMutation, {
 });
 
 const customerDetailsQuery = gql `
-  query CustomerDetailsQuery($id : String!) {
+  query CustomerDetailsQuery($id : Int!) {
     customer(id: $id) {
       id
       name

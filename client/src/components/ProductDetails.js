@@ -33,15 +33,15 @@ class ProductDetails extends Component {
   }
 
   removeItem() {
-    const $barcode = this.props.match.params.barcode
+    const $id = this.props.match.params.id
     const that = this
     this
       .props
       .mutate({
-        variables: $barcode,
+        variables: $id,
         optimisticResponse: {
           removeProduct: {
-            barcode: $barcode,
+            id: $id,
             __typename: 'Product'
           }
         }
@@ -93,29 +93,35 @@ class ProductDetails extends Component {
       <Container>
         <AddProduct product={product} modify={this.state.modify}/>
         {this.renderButtons()}
-        <BatchesDetail lotti={product.lotti} barcode={product.barcode}/>
+        <BatchesDetail lotti={product.lotti} prodId={product.id}/>
       </Container>
     );
   }
 }
 
 const removeProductMutation = gql `
-  mutation RemoveProduct($barcode:  String!) {
-    removeProduct(barcode: $barcode)
+  mutation RemoveProduct($id:  Int!) {
+    removeProduct(id: $id){
+      name
+      description
+      barcode
+      imageUrl
     }
+  }
 `;
 
 const RemoveProductWithMutation = graphql(removeProductMutation, {
   options: (props) => ({
     variables: {
-      barcode: props.match.params.barcode
+      id: props.match.params.id
     }
   })
 });
 
 const productDetailsQuery = gql `
-  query ProductDetailsQuery($barcode : String!) {
-    product(barcode: $barcode) {
+  query ProductDetailsQuery($id : Int!) {
+    product(id: $id) {
+      id
       barcode
       name
       imageUrl
@@ -133,7 +139,7 @@ const productDetailsQuery = gql `
 const ProductDetailsQuery = graphql(productDetailsQuery, {
   options: (props) => ({
     variables: {
-      barcode: props.match.params.barcode
+      id: props.match.params.id
     },
     options: {
       pollInterval: 5000
