@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import NotFound from './NotFound';
 
 import {gql, graphql} from 'react-apollo';
-
+import SelectWithCustomerType from './SelectWithCustomerType';
 /** Styles */
 import Container from 'muicss/lib/react/container';
 import Button from 'muicss/lib/react/button';
@@ -65,6 +65,7 @@ class BatchesDetail extends Component {
             <div className="cell">
               Scadenza
             </div>
+            <div className="cell">Fornitore</div>
             <div className="cell"></div>
           </div>
           {this.state.lotti.map(lotto => {
@@ -74,14 +75,15 @@ class BatchesDetail extends Component {
                   <span className="cell">{lotto.quantita}</span>
                   <span className="cell">{lotto.posizione}</span>
                   <span className="cell">{lotto.scadenza}</span>
+                  <span className="cell">{lotto.fornitoreID}</span>
                   <span className="cell">
-                    <RemoveButtonWithMutation lottoID={lotto.id} barcode={this.props.barcode} onHeaderClick={this.updateState}/>
+                    <RemoveButtonWithMutation lottoID={lotto.id} prodId={this.props.prodId} onHeaderClick={this.updateState}/>
                   </span>
                 </div>
               )
             })}
         </div>
-        <BatchFormWithMutation  barcode={this.props.barcode} onSubmitHandler={this.updateState}/>
+        <BatchFormWithMutation  prodId={this.props.prodId} onSubmitHandler={this.updateState}/>
       </Container>
     );
   }
@@ -97,7 +99,7 @@ class RemoveButton extends Component {
   removeItem() {
     this.props.mutate({
         variables: {
-          barcode : this.props.barcode,
+          prodId : this.props.prodId,
           id : this.props.lottoID
         }
       })
@@ -114,8 +116,8 @@ class RemoveButton extends Component {
 }
 
 const removeBatchMutation = gql `
-mutation removeBatch($barcode:  String!, $id : String!) {
-  removeBatch(barcode: $barcode, id : $id){
+mutation decreaseBatch($prodId:  Int!, $id : String!, $quantity : Int) {
+  decreaseBatch(prodId: $prodId, id : $id, quantity : $quantity){
     id
     quantita
     posizione
@@ -131,10 +133,11 @@ class BatchForm extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      barcode : this.props.barcode,
+      prodId : this.props.prodId,
       id : "",
       quantita :"" ,
       posizione : "",
+      fornitoreId : undefined,
       scadenza : ""
     }
     
@@ -151,6 +154,7 @@ class BatchForm extends Component{
         id : "",
         quantita :"" ,
         posizione : "",
+        fornitoreId : undefined,
         scadenza : ""
       })
       this.props.onSubmitHandler(res.data.addBatch)
@@ -174,6 +178,7 @@ class BatchForm extends Component{
               value={this.state.id}
               floatingLabel={true}
               required={true}/>
+
             <Input
               label="Quantità"
               name="quantita"
@@ -198,6 +203,7 @@ class BatchForm extends Component{
               value={this.state.scadenza}
               floatingLabel={true}
               />
+              <SelectWithCustomerType type="Fornitore" name="fornitoreID" onChange={this.handleInputChange}/>
             <div className="cell">
               <Button color="primary" variant="fab" >+</Button>
           </div>
@@ -205,12 +211,21 @@ class BatchForm extends Component{
     )
   }
 }
+const customersListQuery = gql `
+  query CustomersListQuery {
+    customers(type : Fornitore){
+      id
+      name
+    }
+  }
+`;
 
 const addBatchMutation = gql `
-mutation addBatch($barcode: String!, $id : String!, $quantita : Int, $scadenza : String, $posizione : String) {
-  addBatch(input : {barcode: $barcode, id : $id, quantita : $quantita, scadenza : $scadenza, posizione : $posizione}){
+mutation addBatch($prodId: Int!, $id : String!, $quantita : Int, $scadenza : String, $fornitoreID : Int, $posizione : String) {
+  addBatch(input : {productID: $prodId, id : $id, quantita : $quantita, scadenza : $scadenza, fornitoreID :$fornitoreID, posizione : $posizione}){
     id
     quantita
+    fornitoreID
     posizione
     scadenza
   }

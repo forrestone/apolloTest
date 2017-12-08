@@ -129,6 +129,7 @@ const productDetailsQuery = gql `
       lotti{
         id
         quantita
+        fornitoreID
         posizione
         scadenza
       }

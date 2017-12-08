@@ -47,15 +47,15 @@ const typeDefs = `
   type Lotto{
     id : String!
     quantita : Int
-    fornitoreId : Int
+    fornitoreID : Int
     posizione : String
     scadenza : String
   }
 
   input LottoObj{
     id : String!
-    productID: String
-    fornitoreId : Int
+    productID: Int
+    fornitoreID : Int
     quantita : Int
     posizione : String
     scadenza : String
@@ -75,6 +75,7 @@ const typeDefs = `
     addProduct(input: ProductObj): Product
     removeProduct(id : Int!) : Product
     addBatch(input : LottoObj) : [Lotto]
+    decreaseBatch(prodId :Int!, id: String, quantity : Int) : [Lotto]
     removeBatch(prodId :Int!, id: String) : [Lotto]
   }
 

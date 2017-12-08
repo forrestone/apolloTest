@@ -6,12 +6,16 @@ import { PubSub, withFilter } from 'graphql-subscriptions';
 import Customer from './customer';
 import {Product, Batch} from './product';
 import fs from 'fs';
+import path from 'path';
 import productImport from '../json-storage/product.json';
 import customersImport from '../json-storage/customer.json';
+import productHistory from '../json-storage/productHistory.json'
 
 const productsFile = './json-storage/product.json'
 const customersFile = './json-storage/customer.json'
+const productHistoryFile = './json-storage/productHistory.json'
 
+let productHistoryObj = productHistory
 const productChangeSubscription = new PubSub();
 
 /**PRODOTTI**/
@@ -55,6 +59,17 @@ const  addBatch = (args)=> {
   return product.lotti;
 }
 
+const decreaseBatch = (prodId, id, quantity) => {
+  let product = getProduct(prodId)
+  product.lotti = product.lotti.reduce((pre, batch) =>{
+    if (batch.id !== id)
+      return pre.concat(batch)
+     return batch.quantita <= quantity ? pre : pre.concat(Object.assign({}, batch, {quantita : batch.quantita - quantity}))
+  },[])
+  updateProductData()
+  return product.lotti
+}
+
 const removeBatch = (prodId, id)=>{
   let product = getProduct(prodId)
   product.lotti = product.lotti.filter((batch) => batch.id !== id)
@@ -66,9 +81,7 @@ const removeBatch = (prodId, id)=>{
 /**CLIENTI**/
 let customersObject = customersImport
 
-const getCustomers = (type)=>{
-   return  type ? customersObject.items.filter(c=>c.type.includes(type)): customersObject.items
-}
+const getCustomers = (type)=>type?customersObject.items.filter(c=>c.type.includes(type)) : customersObject.items
 
 const getCustomer = (id) =>{
   return customersObject.items.find(customer => customer.id === id);
@@ -97,7 +110,7 @@ const removeCustomer = (id) =>{
 
 export const resolvers = {
   Query : {
-    customers: () => getCustomers(),
+    customers: (root, {type}) => getCustomers(type),
     customer: (root, {id}) => getCustomer(id),
     products: () => getProducts(),
     product: (root, {id}) => getProduct(id),
@@ -109,9 +122,8 @@ export const resolvers = {
     addProduct: (root, {input}) => addProduct(input),
     removeProduct: (root, {id}) => removeProduct(id),
     addBatch :(root, {input})=> addBatch(input),
-    removeBatch:(root, {prodId, id})=>{
-      return removeBatch(prodId, id)
-    } 
+    decreaseBatch : (root, {prodId, id, quantity}) => decreaseBatch(prodId , id, quantity ),
+    removeBatch:(root, {prodId, id})=>removeBatch(prodId, id)
   },
   Subscription : {
     productChanged : {
@@ -122,17 +134,27 @@ export const resolvers = {
 };
 
 
-const saveToFile = (filename, object) => {
-  fs.writeFile(filename, JSON.stringify(object), (err)=>{
+const saveToFile = (filepath, object) => {
+  fs.writeFile(filepath, JSON.stringify(object), (err)=>{
     if(err) throw err;
-    console.log('the file has been saved')
+    const filename = path.basename(filepath)
+    console.log(`the file ${filename} has been saved`)
   })
 }
 
-const updateProductData = () => {
+const updateProductData = (action, message) => {
   saveToFile(productsFile,productObject)
+  updateHistoryObj(action, message)
 }
 
 const updateCustomerData = () => {
   saveToFile(customersFile,customersObject)
+}
+
+const updateHistoryObj = (action, message) => {
+  const today = new Date().toISOString().slice(0,10)
+  productHistoryObj[today] = [].concat(message, productHistoryObj[today] || [])
+
+  saveToFile(productHistoryFile, productHistoryObj)
+
 }
