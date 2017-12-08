@@ -150,7 +150,7 @@ class AddCustomer extends React.Component {
                     label={c.name} 
                     value={c.name} 
                     key={c.name}
-                    checked = {this.state.type.some(t=>t===c.name)}
+                    checked={this.state.type.some(t=>t===c.name)}
                     onChange={this.handleCheckboxChange}/>
                 )
                   :

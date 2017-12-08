@@ -155,16 +155,4 @@ const ProductDetailsQuery = graphql(productDetailsQuery, {
 
 const multiple = compose(ProductDetailsQuery, RemoveProductWithMutation)(ProductDetails);
 
-/*(graphql(removeProductMutation,{
-  options: (props) => ({
-    variables: {
-      productId: props.match.params.productId,
-    },
-  }),
-  props: (props) => {
-    return {
-      data: props.data,
-    };
-  }
-}))*/
 export default multiple

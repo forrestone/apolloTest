@@ -18,3 +18,8 @@
 .AddCustomer .flexRow>div{
     flex:1 1 auto;
 }
+
+/*override*/
+.AddBatch .mui-select{
+    padding-top : 0;
+}

@@ -35,7 +35,19 @@
   justify-content: space-between;
   flex-wrap: nowrap;
 }
+
+.flexRow2{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 .flexColumn{
   display: flex;
   flex-direction: column;
+}
+
+.attention-color{
+  background-color: #feff58;
 }

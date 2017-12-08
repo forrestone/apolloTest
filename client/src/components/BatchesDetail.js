@@ -68,20 +68,7 @@ class BatchesDetail extends Component {
             <div className="cell">Fornitore</div>
             <div className="cell"></div>
           </div>
-          {this.state.lotti.map(lotto => {
-              return (
-                <div key={lotto.id} className='row '>
-                  <span className="cell">{lotto.id}</span>
-                  <span className="cell">{lotto.quantita}</span>
-                  <span className="cell">{lotto.posizione}</span>
-                  <span className="cell">{lotto.scadenza}</span>
-                  <span className="cell">{lotto.fornitoreID}</span>
-                  <span className="cell">
-                    <RemoveButtonWithMutation lottoID={lotto.id} prodId={this.props.prodId} onHeaderClick={this.updateState}/>
-                  </span>
-                </div>
-              )
-            })}
+          {this.state.lotti.map(lotto => <BatchRowWithMutation key={lotto.id} lotto={lotto} prodId={this.props.prodId} onElementRemove={this.updateState}/>)}
         </div>
         <BatchFormWithMutation  prodId={this.props.prodId} onSubmitHandler={this.updateState}/>
       </Container>
@@ -89,28 +76,87 @@ class BatchesDetail extends Component {
   }
 }
 
-class RemoveButton extends Component {
+class BatchRow extends Component {
   constructor(props) {
     super(props);
-    
-    this.removeItem = this.removeItem.bind(this);
+    this.state = {
+      askConfirmation : false,
+      quantita : undefined
     }
+    this.showReduceform = this.showReduceform.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
 
-  removeItem() {
+  handleSubmit(evt){
+    evt.preventDefault()
+    console.log("submit",evt.target)
+    
     this.props.mutate({
-        variables: {
-          prodId : this.props.prodId,
-          id : this.props.lottoID
-        }
+      variables: {
+        prodId : this.props.prodId,
+        id : this.props.lotto.id,
+        quantity : this.state.quantita
+      }
+    })
+    .then(res=>{
+      this.props.onElementRemove(res.data.decreaseBatch)
+      this.setState({
+        askConfirmation : false
       })
-      .then(res=>this.props.onHeaderClick(res.data.removeBatch))
+    })
+  }
+
+  handleInputChange(evt){
+    this.setState({
+      [evt.target.name]: evt.target.value
+    });
+  }
+
+  showReduceform(evt) {
+    evt.preventDefault()
+    this.setState({
+      askConfirmation : evt.target.value==="true"
+    })
   }
 
   render() {
+    const lotto = this.props.lotto
+    if(this.state.askConfirmation){
+      return(   
+         <Form className="flexRow2 modifyBatch attention-color" onSubmit={this.handleSubmit}>
+            <span className="">{lotto.id}</span>
+            <span className=""> Quantità da rimuovere </span>  
+            <Input
+              label="quantità"
+              name="quantita"
+              type="number"
+              className=""
+              max={lotto.quantita}
+              min={1}
+              onChange={this.handleInputChange}
+              value={this.state.quantity}
+              floatingLabel={true}
+              required={true}/>
+              <span className=""> MAX {lotto.quantita} </span>
+              <Button variant="flat" color="danger"  value={false} onClick={this.showReduceform}>Annulla</Button>
+              <Button variant="flat" color="primary" onClick={this.handleSubmit}>Conferma</Button>
+          </Form>
+      )
+    }
     return (
-      <Button color="danger" variant="fab" onClick={this.removeItem}>
-        -
-      </Button>
+      <div className='row '>
+        <span className="cell">{lotto.id}</span>
+        <span className="cell">{lotto.quantita}</span>
+        <span className="cell">{lotto.posizione}</span>
+        <span className="cell">{lotto.scadenza}</span>
+        <span className="cell">{lotto.fornitoreID}</span>
+        <span className="cell">
+        <Button color="danger" variant="fab" value={true} onClick={this.showReduceform}>
+          -
+        </Button>
+      </span>
+    </div>
     );
   }
 }
@@ -126,7 +172,7 @@ mutation decreaseBatch($prodId:  Int!, $id : String!, $quantity : Int) {
 }
 `;
 
-const RemoveButtonWithMutation = graphql(removeBatchMutation)(RemoveButton);
+const BatchRowWithMutation = graphql(removeBatchMutation)(BatchRow);
 
 
 class BatchForm extends Component{
@@ -168,7 +214,7 @@ class BatchForm extends Component{
   }
   render(){
     return (
-      <Form className="AddBatch tableList" onSubmit={this.handleSubmit}>
+      <Form className="AddBatch row" onSubmit={this.handleSubmit}>
             <Input
               label="Id"
               name="id"
@@ -183,6 +229,7 @@ class BatchForm extends Component{
               label="Quantità"
               name="quantita"
               type="number"
+              min={1}
               className="cell"
               floatingLabel={true}
               onChange={this.handleInputChange}
@@ -211,14 +258,6 @@ class BatchForm extends Component{
     )
   }
 }
-const customersListQuery = gql `
-  query CustomersListQuery {
-    customers(type : Fornitore){
-      id
-      name
-    }
-  }
-`;
 
 const addBatchMutation = gql `
 mutation addBatch($prodId: Int!, $id : String!, $quantita : Int, $scadenza : String, $fornitoreID : Int, $posizione : String) {

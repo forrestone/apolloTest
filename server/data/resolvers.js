@@ -11,9 +11,6 @@ import productImport from '../json-storage/product.json';
 import customersImport from '../json-storage/customer.json';
 import productHistory from '../json-storage/productHistory.json'
 
-const productsFile = './json-storage/product.json'
-const customersFile = './json-storage/customer.json'
-const productHistoryFile = './json-storage/productHistory.json'
 
 let productHistoryObj = productHistory
 const productChangeSubscription = new PubSub();
@@ -35,7 +32,7 @@ const  addProduct = (args)=> {
     newProduct.id=++productObject.currentIndex
     productObject.items = productObject.items.concat(newProduct)
   }
-  updateProductData()
+  updateProductData(productObject)
   productChangeSubscription.publish('productChanged',{productChanged : newProduct})
   return newProduct;
 }
@@ -43,7 +40,7 @@ const  addProduct = (args)=> {
 const removeProduct = (id)=>{
   let productToRemove = productObject.items.find(product => product.id === id);
   productObject.items = productObject.items.filter((product) => product.id !== id)
-  updateProductData()
+  updateProductData(productObject)
   return productToRemove
 }
 
@@ -54,7 +51,8 @@ const getBatches = (id)=>{
 const  addBatch = (args)=> {
   let product = getProduct(args.productID)
   product.lotti.push(new Batch(args.id, args.quantita, args.posizione, args.fornitoreID, args.scadenza))
-  updateProductData()
+  updateProductData(productObject)
+  updateHistoryObj("add",{product:{id:product.id,name : product.name},lotto:args})
   productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti;
 }
@@ -66,14 +64,15 @@ const decreaseBatch = (prodId, id, quantity) => {
       return pre.concat(batch)
      return batch.quantita <= quantity ? pre : pre.concat(Object.assign({}, batch, {quantita : batch.quantita - quantity}))
   },[])
-  updateProductData()
+  updateHistoryObj("remove",{product:{id:product.id,name : product.name},lotto:{id,quantity}})
+  updateProductData(productObject)
   return product.lotti
 }
 
 const removeBatch = (prodId, id)=>{
   let product = getProduct(prodId)
   product.lotti = product.lotti.filter((batch) => batch.id !== id)
-  updateProductData()
+  updateProductData(productObject)
   productChangeSubscription.publish('productChanged',{productChanged : product})
   return product.lotti
 }
@@ -96,14 +95,14 @@ const  addCustomer = (args)=> {
     customersObject.items = customersObject.items.concat(newCustomer);
   }
    
-  updateCustomerData()
+  updateCustomerData(customersObject)
   return newCustomer;
 }
 
 const removeCustomer = (id) =>{
   let customerToRemove = customersObject.items.find(customer => customer.id === id);
   customersObject.items = customersObject.items.filter((customer) => customer.id !== id)
-  updateCustomerData()
+  updateCustomerData(customersObject)
   return customerToRemove
 }
 
@@ -142,17 +141,21 @@ const saveToFile = (filepath, object) => {
   })
 }
 
-const updateProductData = (action, message) => {
-  saveToFile(productsFile,productObject)
-  updateHistoryObj(action, message)
+
+const updateProductData = (obj) => {
+  const productsFile = './json-storage/product.json'
+  saveToFile(productsFile,obj)
 }
 
-const updateCustomerData = () => {
-  saveToFile(customersFile,customersObject)
+const updateCustomerData = (obj) => {
+  const customersFile = './json-storage/customer.json'
+  saveToFile(customersFile,obj)
 }
 
-const updateHistoryObj = (action, message) => {
+const updateHistoryObj = (action, obj) => {
+  const productHistoryFile = './json-storage/productHistory.json'
   const today = new Date().toISOString().slice(0,10)
+  const message = {action, obj};
   productHistoryObj[today] = [].concat(message, productHistoryObj[today] || [])
 
   saveToFile(productHistoryFile, productHistoryObj)
