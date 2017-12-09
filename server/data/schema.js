@@ -1,8 +1,9 @@
 import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
+import BatchHistoryInfo from './schemaBatchHistory'
 import {resolvers} from './resolvers';
 
 
-const typeDefs = `
+const baseDefs = `
   type Product {
     id : Int!,
     name: String,
@@ -19,7 +20,6 @@ const typeDefs = `
     barcode: String,
     imageUrl: String
   }
-
 
   enum CustomerType{
     Cliente
@@ -67,6 +67,7 @@ const typeDefs = `
     products: [Product]
     product(id : Int!) : Product
     batches(id : Int!) : [Lotto]
+
   }
 
   type Mutation {
@@ -84,5 +85,5 @@ const typeDefs = `
   }
 `;
  
-const schema = makeExecutableSchema({ typeDefs, resolvers });
+const schema = makeExecutableSchema({ typeDefs:[baseDefs,BatchHistoryInfo], resolvers });
 export { schema };

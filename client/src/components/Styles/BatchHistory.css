@@ -1,0 +1,14 @@
+.batchHistory .flexRow2 svg{
+    width: 30px;
+    fill: #41b570;
+}
+
+.batchHistory .flexRow2.remove svg{
+    width: 30px;
+    transform : rotate(180deg);
+    fill: rgb(220, 0, 0);
+}
+
+.batchHistory .header{
+    text-indent: 1em;
+}

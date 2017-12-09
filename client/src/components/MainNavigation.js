@@ -16,6 +16,9 @@ class MainNavigation extends React.Component {
         <Link className="navigation" to='/customers'>
           <Button>Clienti</Button>
         </Link>
+        <Link className="navigation" to='/batchesHystory'>
+          <Button>Storico</Button>
+        </Link>
       </Appbar>
     );
   }

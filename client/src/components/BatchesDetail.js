@@ -90,8 +90,6 @@ class BatchRow extends Component {
 
   handleSubmit(evt){
     evt.preventDefault()
-    console.log("submit",evt.target)
-    
     this.props.mutate({
       variables: {
         prodId : this.props.prodId,
@@ -100,10 +98,10 @@ class BatchRow extends Component {
       }
     })
     .then(res=>{
-      this.props.onElementRemove(res.data.decreaseBatch)
       this.setState({
         askConfirmation : false
       })
+      this.props.onElementRemove(res.data.decreaseBatch)
     })
   }
 

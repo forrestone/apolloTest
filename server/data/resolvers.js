@@ -57,14 +57,14 @@ const  addBatch = (args)=> {
   return product.lotti;
 }
 
-const decreaseBatch = (prodId, id, quantity) => {
+const decreaseBatch = (prodId, id, quantita) => {
   let product = getProduct(prodId)
   product.lotti = product.lotti.reduce((pre, batch) =>{
     if (batch.id !== id)
       return pre.concat(batch)
-     return batch.quantita <= quantity ? pre : pre.concat(Object.assign({}, batch, {quantita : batch.quantita - quantity}))
+     return batch.quantita <= quantita ? pre : pre.concat(Object.assign({}, batch, {quantita : batch.quantita - quantita}))
   },[])
-  updateHistoryObj("remove",{product:{id:product.id,name : product.name},lotto:{id,quantity}})
+  updateHistoryObj("remove",{product:{id:product.id,name : product.name},lotto:{id,quantita}})
   updateProductData(productObject)
   return product.lotti
 }
@@ -113,7 +113,8 @@ export const resolvers = {
     customer: (root, {id}) => getCustomer(id),
     products: () => getProducts(),
     product: (root, {id}) => getProduct(id),
-    batches : (root, {id}) => getBatches(id)
+    batches : (root, {id}) => getBatches(id),
+    batchHistory : () =>Object.keys(productHistoryObj).map(c=>({"date":c, "actions":productHistoryObj[c]}))
   },
   Mutation : {
     addCustomer: (root, {input}) => addCustomer(input),
@@ -155,7 +156,7 @@ const updateCustomerData = (obj) => {
 const updateHistoryObj = (action, obj) => {
   const productHistoryFile = './json-storage/productHistory.json'
   const today = new Date().toISOString().slice(0,10)
-  const message = {action, obj};
+  const message = Object.assign({},{action},obj);
   productHistoryObj[today] = [].concat(message, productHistoryObj[today] || [])
 
   saveToFile(productHistoryFile, productHistoryObj)

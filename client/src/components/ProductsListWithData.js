@@ -74,7 +74,7 @@ class ProductsList extends Component {
                 : '')}>
                 <Link
                   className="cell"
-                  to={pr.barcode < 0
+                  to={pr.id < 0
                   ? `/`
                   : `product/${pr.id}`}>
                   {pr.name}
