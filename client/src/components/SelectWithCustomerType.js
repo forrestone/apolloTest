@@ -9,11 +9,13 @@ import Select from 'muicss/lib/react/select';
 class SelectWithCustomer extends Component{
     constructor(props) {
         super(props);
+
         this.onValueChange = this.onValueChange.bind(this)
     }
 
     onValueChange(evt){
-        this.props.onChange(evt)
+        const customerToReturn = this.props.data.customers.find(c=>c.id==evt.target.value)
+        this.props.onChange(evt, customerToReturn)
     }
     render(){
         const {
@@ -34,7 +36,7 @@ class SelectWithCustomer extends Component{
         return(
             <Select name={this.props.name} onChange={this.onValueChange}>
                 <Option value={null} label=""/>
-                {customers.map(c=><Option  value={c.id} key={c.id} label={`${c.id} ${c.name}`}/>)}
+                {customers.map(c=><Option value={c.id} key={c.id} label={`${c.id} ${c.name}`}/>)}
             </Select>
         )
     }
@@ -45,6 +47,10 @@ query CustomersListQuery($type : CustomerType) {
   customers(type : $type ){
     id
     name
+    description
+    type
+    address
+    partitaIva
   }
 }
 `;

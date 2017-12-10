@@ -187,6 +187,7 @@ class BatchForm extends Component{
     
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
   
   handleSubmit(event) {
@@ -203,6 +204,11 @@ class BatchForm extends Component{
       })
       this.props.onSubmitHandler(res.data.addBatch)
     })
+  }
+
+  handleSelectChange(evt){
+    debugger;
+    console.log(evt.target.value.id)
   }
 
   handleInputChange(evt) {
@@ -248,7 +254,7 @@ class BatchForm extends Component{
               value={this.state.scadenza}
               floatingLabel={true}
               />
-              <SelectWithCustomerType type="Fornitore" name="fornitoreID" onChange={this.handleInputChange}/>
+              <SelectWithCustomerType type="Fornitore" name="fornitoreID" onChange={this.handleSelectChange}/>
             <div className="cell">
               <Button color="primary" variant="fab" >+</Button>
           </div>
