@@ -1,6 +1,6 @@
 .tableList{
     width: 100%;
-
+    display: table;
 }
 .header{
     display: flex;

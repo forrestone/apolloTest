@@ -30,6 +30,16 @@
   background-color: rgba(255, 255, 255, 0.8)
 }
 
+.flexRowBase{
+  display: flex;
+  flex-wrap: nowrap;
+}
+.flexCell{
+  padding: 6px 12px;
+  flex: 1 1 0;
+  text-align: center;
+}
+
 .flexRow{
   display: flex;
   justify-content: space-between;

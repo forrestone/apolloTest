@@ -51,7 +51,7 @@ class CustomersList extends Component {
         <Tabs defaultSelectedIndex={0}>
           {CustomerTypes.__type.enumValues.map(t=><Tab value={t.name} label={t.name} key={t.name} onActive={this.filter}/>)}
         </Tabs>
-        <div className="customersList tableList" data-component-name="customersList">
+        <div className="customersList" data-component-name="customersList">
           <div className="header">
             <div className="cell">
               Name

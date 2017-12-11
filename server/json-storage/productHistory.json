@@ -1,1 +1,1 @@
-{}
+{"2017-12-09":[{"action":"remove","product":{"id":2,"name":"test1"},"lotto":{"id":"1","quantita":10}},{"action":"add","product":{"id":2,"name":"test1"},"lotto":{"id":"15","productID":2,"fornitoreID":3,"quantita":1000,"posizione":"dfs","scadenza":""}},{"action":"remove","product":{"id":2,"name":"test1"},"lotto":{"id":"1","quantita":13}},{"action":"remove","product":{"id":2,"name":"test1"},"lotto":{"id":"12","quantita":2}},{"action":"remove","product":{"id":2,"name":"test1"},"lotto":{"id":"2","quantita":7}}]}

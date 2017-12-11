@@ -39,7 +39,7 @@ class BatchHistory extends Component {
     return (
       <Container>
         {batchHistory.map(h=>(
-          <div className="tableList batchHistory">
+          <div className="batchHistory">
           <h2 className="header" >{h.date}</h2>
            {h.actions.map(a=><HistoryRow action={a}/>)}
           </div>

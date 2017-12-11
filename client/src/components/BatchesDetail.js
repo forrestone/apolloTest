@@ -51,7 +51,7 @@ class BatchesDetail extends Component {
     return (
       <Container>
         <h2>Lotti</h2>
-        <div className="LottiList tableList" data-component-name="LottiList">
+        <div className="LottiList" data-component-name="LottiList">
           <div className="header">
             <div className="cell">
               Id

@@ -42,7 +42,7 @@ class ProductsList extends Component {
 
     return (
       <Container>
-        <div className="productsList tableList" data-component-name="productList">
+        <div className="productsList" data-component-name="productList">
           <div className="header">
             <div className="cell">
               Name

@@ -1,1 +1,1 @@
-{"currentIndex":1,"items":[]}
+{"currentIndex":2,"items":[{"id":2,"name":"test1","description":"prova prod Medusa","barcode":"2","imageUrl":"http://localhost:4000/files/Jellyfish.jpg","lotti":[{"id":"1","quantita":122,"fornitoreID":4,"posizione":"t","scadenza":""},{"id":"4","quantita":null,"fornitoreID":3,"posizione":"g","scadenza":""},{"id":"2","quantita":90,"fornitoreID":3,"posizione":"3","scadenza":""},{"id":"12","quantita":2,"fornitoreID":4,"posizione":"4","scadenza":""},{"id":"15","quantita":1000,"fornitoreID":3,"posizione":"dfs","scadenza":""}]}]}

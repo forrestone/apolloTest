@@ -1,1 +1,1 @@
-{"currentIndex":1,"items":[]}
+{"currentIndex":4,"items":[{"id":2,"name":"test cliente","address":"213","partitaIva":"123","type":["Cliente"],"description":"client"},{"id":3,"name":"test fornitore","address":"","partitaIva":"32432","type":["Fornitore"],"description":"dec fornitore"},{"id":4,"name":"test2 forn","address":"SDAOI","partitaIva":"23324","type":["Fornitore"],"description":"DESC for 2"}]}

@@ -8,6 +8,8 @@ import CustomerDetails from './components/CustomerDetails';
 import AddProduct from './components/AddProduct';
 import AddCustomer from './components/AddCustomer';
 import MainNavigation from './components/MainNavigation';
+import BatchHistory from './components/BatchHistory';
+import AddDDT from './components/addDDT';
 
 import './App.css'
 import Container from 'muicss/lib/react/container';
@@ -72,6 +74,8 @@ class App extends Component {
               <Route exact path="/addCustomer" component={AddCustomer} />
               <Route exact path="/customer/:id" component={CustomerDetails} />
               <Route exact path="/addProduct" component={AddProduct} />
+              <Route exact path="/batchesHystory" component={BatchHistory} />
+              <Route exact path="/addDDT" component={AddDDT} />
               <Route path="/product/:id" component={ProductDetails} />
               <Route component={NotFound} />
             </Switch>
