@@ -59,8 +59,8 @@ class HistoryRow extends Component{
         <svg viewBox="0 0 36 36">
           <use xlinkHref="arrow.svg#arrow"></use>
         </svg>
-        <span className="cell">Prodotto: <Link className="cell" to={`product/${action.product.id}`}>{action.product.name}</Link></span>
-        <span className="cell">Lotto: {action.lotto.id}</span>
+        <span className="cell">Prodotto: <Link className="cell" to={`product/${action.product.productId}`}>{action.product.name}</Link></span>
+        <span className="cell">Lotto: {action.lotto.lottoId}</span>
         <span className="cell">Quantità: {action.lotto.quantita}</span>
       </div>
       
@@ -75,11 +75,11 @@ const HistoryListQuery = gql `
       actions{
         action
         product {
-          id
+          productId
           name
         }
         lotto {
-          id
+          lottoId
           quantita
         }
       }

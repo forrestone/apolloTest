@@ -11,12 +11,12 @@ const BatchHistoryInfo = `
   }
 
   type productHistoryInfo{
-    id : Int
+    productId : Int
     name : String
   }
 
   type batchHistoryInfo{
-    id : String
+    lottoId : String
     quantita : Int
   }
   

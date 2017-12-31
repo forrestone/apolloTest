@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon ./server.js --exec babel-node -e js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fix-history" : "nodemon ./utils/fix-history.js  --exec babel-node -e js"
   },
   "author": "",
   "license": "MIT",
