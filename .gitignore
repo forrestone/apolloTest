@@ -40,5 +40,4 @@ jspm_packages
 
 .vscode
 
-server/json-storage/product.json
-server/json-storage/customer.json
+server/json-storage/*.json

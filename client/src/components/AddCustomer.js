@@ -21,7 +21,13 @@ class AddCustomer extends React.Component {
       name : "",
       partitaIva : "",
       type : [],
-      address : "",
+      address : {
+        via :"",
+        nazione : "",
+        cap : "",
+        loc : "",
+        prov : ""
+      },
       description : ""
     }
     if (this.props.customer) {
@@ -32,6 +38,10 @@ class AddCustomer extends React.Component {
       .bind(this);
     this.handleInputChange = this
       .handleInputChange
+      .bind(this);
+
+    this.handleAddressInputChange = this
+      .handleAddressInputChange
       .bind(this);
 
     this.handleCheckboxChange = this
@@ -76,6 +86,14 @@ class AddCustomer extends React.Component {
     });
   }
 
+  handleAddressInputChange(evt) {
+    this.setState({
+      address: Object.assign({}, this.state.address, {
+        [evt.target.name] : evt.target.value
+      })
+    })
+  }
+
   handleCheckboxChange(evt) {
     let newType = evt.target.checked ? 
     this.state.type.concat(evt.target.value)
@@ -83,7 +101,7 @@ class AddCustomer extends React.Component {
     this.state.type.filter(t=>t!==evt.target.value)
   //[... new Set(newType)] torna un array di valori unici 
     this.setState({
-      type: [... new Set(newType)]
+      type: [...new Set(newType)]
     });
 
   }
@@ -136,13 +154,74 @@ class AddCustomer extends React.Component {
                 onChange={this.handleInputChange}
                 floatingLabel={true}
                 required={true}/>
-              <Textarea
-                label="Indirizzo"
-                name="address"
-                value={this.state.address}
+
+              <Input
+                label="Telefono"
+                name="tel"
+                type="text"
+                value={this.state.tel}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+                required={true}/>
+              <Input
+                label="Fax"
+                name="fax"
+                type="text"
+                value={this.state.fax}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+                required={true}/>
+              <Input
+                label="Mail"
+                name="mail"
+                type="email"
+                value={this.state.mail}
+                disabled={!this.state.modify}
+                onChange={this.handleInputChange}
+                floatingLabel={true}
+                required={true}/>
+
+              <Input
+                label="Indirizzo Via"
+                name="via"
+                value={this.state.address.via}
                 disabled={!this.state.modify}
                 floatingLabel={true}
-                onChange={this.handleInputChange}/>
+                onChange={this.handleAddressInputChange}/>
+              <Input
+                label="Indirizzo Località"
+                name="loc"
+                value={this.state.address.loc}
+                disabled={!this.state.modify}
+                floatingLabel={true}
+                onChange={this.handleAddressInputChange}/>
+
+              <Input
+                label="Indirizzo Provincia"
+                name="prov"
+                value={this.state.address.prov}
+                disabled={!this.state.modify}
+                floatingLabel={true}
+                onChange={this.handleAddressInputChange}/>
+
+              <Input
+                label="Indirizzo cap"
+                name="cap"
+                value={this.state.address.cap}
+                disabled={!this.state.modify}
+                floatingLabel={true}
+                onChange={this.handleAddressInputChange}/>
+
+              <Input
+                label="Indirizzo Nazione"
+                name="nazione"
+                value={this.state.address.nazione}
+                disabled={!this.state.modify}
+                floatingLabel={true}
+                onChange={this.handleAddressInputChange}/>
+
                 {this.state.modify?
                   this.state.customerTypes.map(c=>
                   <Checkbox 
@@ -163,14 +242,6 @@ class AddCustomer extends React.Component {
                   floatingLabel={true}
                   required={true}/>
                 }
-              
-              <Textarea
-                label="Descrizione"
-                name="description"
-                value={this.state.description}
-                disabled={!this.state.modify}
-                floatingLabel={true}
-                onChange={this.handleInputChange}/>
             </div>
           </div>
           {this.ButtonManager()}
@@ -183,13 +254,12 @@ class AddCustomer extends React.Component {
 
 
 const addCustomer = gql `
-  mutation AddCustomer($id: Int, $name: String!, $partitaIva : String, $address : String, $description : String, $type : [CustomerType]!) {
+  mutation AddCustomer($id: Int, $name: String!, $partitaIva : String, $address : AddressObj, $description : String, $type : [CustomerType]!) {
     addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, type : $type, description : $description}){
       id
       name
       partitaIva
       type
-      description
       address
     }
   }

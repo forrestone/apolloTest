@@ -119,10 +119,19 @@ const customerDetailsQuery = gql `
     customer(id: $id) {
       id
       name
-      description
       type
-      address
+      tel
+      fax
+      tipoPag
       partitaIva
+      mail
+      address{
+        nazione
+        via
+        cap
+        loc
+        prov
+      }
     }
   }
 `;

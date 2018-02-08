@@ -14,7 +14,7 @@ class SelectWithCustomer extends Component{
     }
 
     onValueChange(evt){
-        const customerToReturn = this.props.data.customers.find(c=>c.id==evt.target.value)
+        const customerToReturn = this.props.data.customers.find(c=>c.id===parseInt(evt.target.value,10))
         this.props.onChange(evt, customerToReturn)
     }
     render(){

@@ -19,3 +19,37 @@ export class Batch{
   }
 }
 
+export const ProductSchema = `
+  type Product {
+    id : Int!,
+    name: String,
+    description: String,
+    barcode: String,
+    imageUrl: String,
+    lotti : [Lotto]
+  }
+
+  input ProductObj {
+    id : Int,
+    name: String,
+    description: String,
+    barcode: String,
+    imageUrl: String
+  }
+
+  type Lotto{
+    id : String!
+    quantita : Int
+    fornitoreID : Int
+    posizione : String
+    scadenza : String
+  }
+
+  input LottoObj{
+    id : String!
+    productID: Int
+    fornitoreID : Int
+    quantita : Int
+    posizione : String
+    scadenza : String
+  }`;

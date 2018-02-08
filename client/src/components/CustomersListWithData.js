@@ -79,7 +79,7 @@ class CustomersList extends Component {
                   {cm.name}
                 </Link>
                 <span className="cell">{cm.partitaIva}</span>
-                <span className="cell">{cm.address}</span>
+                <span className="cell">{cm.address.via}-{cm.address.loc}({cm.address.prov})</span>
                 <span className="cell">{cm.type.join(',')}</span>
               </div>
             )
@@ -100,8 +100,13 @@ const customersListQuery = gql `
     customers{
       id
       name
+      mail
       partitaIva
-      address
+      address{
+        via
+        loc
+        prov
+      }
       type
     }
   }

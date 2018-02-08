@@ -1,65 +1,12 @@
 import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
 import BatchHistoryInfo from './schemaBatchHistory'
 import {resolvers} from './resolvers';
+import { CustomerSchema } from './customer';
+import { ProductSchema } from './product';
+
 
 
 const baseDefs = `
-  type Product {
-    id : Int!,
-    name: String,
-    description: String,
-    barcode: String,
-    imageUrl: String,
-    lotti : [Lotto]
-  }
-
-  input ProductObj {
-    id : Int,
-    name: String,
-    description: String,
-    barcode: String,
-    imageUrl: String
-  }
-
-  enum CustomerType{
-    Cliente
-    Fornitore
-  }
-
-  type Customer {
-    id: Int!,
-    name: String,
-    partitaIva: String,
-    type : [CustomerType]!,
-    description: String,
-    address : String
-  }
-
-  input CustomerObj {
-    id: Int,
-    name: String,
-    partitaIva: String,
-    type : [CustomerType]!,
-    description: String,
-    address : String
-  }
-
-  type Lotto{
-    id : String!
-    quantita : Int
-    fornitoreID : Int
-    posizione : String
-    scadenza : String
-  }
-
-  input LottoObj{
-    id : String!
-    productID: Int
-    fornitoreID : Int
-    quantita : Int
-    posizione : String
-    scadenza : String
-  }
 
   type Query {
     customers(type : CustomerType): [Customer]
@@ -67,7 +14,6 @@ const baseDefs = `
     products: [Product]
     product(id : Int!) : Product
     batches(id : Int!) : [Lotto]
-
   }
 
   type Mutation {
@@ -85,5 +31,5 @@ const baseDefs = `
   }
 `;
  
-const schema = makeExecutableSchema({ typeDefs:[baseDefs,BatchHistoryInfo], resolvers });
+const schema = makeExecutableSchema({ typeDefs:[baseDefs,BatchHistoryInfo, CustomerSchema, ProductSchema], resolvers });
 export { schema };

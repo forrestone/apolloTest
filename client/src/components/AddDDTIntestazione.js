@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
+//import {Link} from 'react-router-dom'
 
-import {gql, graphql} from 'react-apollo';
+//import {gql, graphql} from 'react-apollo';
 
 import SelectWithCustomerType from './SelectWithCustomerType';
 
