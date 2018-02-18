@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import ProductsListWithData from './components/ProductsListWithData';
-import CustomersListWithData from './components/CustomersListWithData';
-import NotFound from './components/NotFound';
-import ProductDetails from './components/ProductDetails';
-import CustomerDetails from './components/CustomerDetails';
-import AddProduct from './components/AddProduct';
-import AddCustomer from './components/AddCustomer';
-import MainNavigation from './components/MainNavigation';
-import BatchHistory from './components/BatchHistory';
-import AddDDT from './components/addDDT';
-import LoginPage from './components/EnsureLoggedInContainer';
+import LoginPage from './components/LoginPage';
 
 import './App.css'
 import Container from 'muicss/lib/react/container';
@@ -62,7 +52,6 @@ const client = new ApolloClient({
 
 class App extends React.Component {
   render() {
-    if (true){
       return (
         <ApolloProvider client={client}>
           <BrowserRouter>
@@ -71,30 +60,6 @@ class App extends React.Component {
         </ApolloProvider>
       )
     }
-    return (
-      <ApolloProvider client={client}>
-        <BrowserRouter>
-        <Container>
-          <div className="App">
-            <MainNavigation />
-            <Switch>
-                <Route exact path="/" component={ProductsListWithData} />
-                <Route exact path="/products" component={ProductsListWithData} />
-                <Route exact path="/customers" component={CustomersListWithData} />
-                <Route exact path="/addCustomer" component={AddCustomer} />
-                <Route exact path="/customer/:id" component={CustomerDetails} />
-                <Route exact path="/addProduct" component={AddProduct} />
-                <Route exact path="/batchesHystory" component={BatchHistory} />
-                <Route exact path="/addDDT" component={AddDDT} />
-                <Route path="/product/:id" component={ProductDetails} />
-                <Route component={NotFound} />
-            </Switch>
-          </div>
-          </Container>
-        </BrowserRouter>
-      </ApolloProvider>
-    );
-  }
 }
 
 export default App;

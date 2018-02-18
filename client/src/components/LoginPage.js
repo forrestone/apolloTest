@@ -45,11 +45,7 @@ class LoginPage extends React.Component {
             variables : {
                 password
             }
-        }).then(({data})=>{
-            debugger;
-            this.setState({loggedIn : data.login})
-
-        } )
+        }).then(({data})=>this.setState({loggedIn : data.login}))
     }
 
     render() {
