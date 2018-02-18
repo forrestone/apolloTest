@@ -3,7 +3,7 @@ import { withFilter } from 'graphql-subscriptions';
 import faker from 'faker';
 */
 import { PubSub, withFilter } from 'graphql-subscriptions';
-import Customer from './customer';
+import {Customer, Address} from './customer';
 import {Product, Batch} from './product';
 import fs from 'fs';
 import path from 'path';
@@ -87,7 +87,7 @@ const getCustomer = (id) =>{
 }
 
 const  addCustomer = (args)=> {
-  let newCustomer = new Customer(args.id, args.name, args.address, args.partitaIva, args.type, args.description)
+  let newCustomer = new Customer(args.id, args.name, args.partitaIva, args.type, args.address, args.tel, args.fax, args.tipoPag, args.mail)
   if(customersObject.items.some(c=>c.id === args.id)){
     customersObject.items = customersObject.items.map(c=>c.id!==newCustomer.id?c:newCustomer)
   }else{
@@ -107,6 +107,8 @@ const removeCustomer = (id) =>{
 }
 
 
+const login = (password)=>password==="test";
+
 export const resolvers = {
   Query : {
     customers: (root, {type}) => getCustomers(type),
@@ -114,7 +116,8 @@ export const resolvers = {
     products: () => getProducts(),
     product: (root, {id}) => getProduct(id),
     batches : (root, {id}) => getBatches(id),
-    batchHistory : () =>Object.keys(productHistoryObj).map(c=>({"date":c, "actions":productHistoryObj[c]}))
+    batchHistory : () =>Object.keys(productHistoryObj).map(c=>({"date":c, "actions":productHistoryObj[c]})),
+    login : (root, {password}) => login(password)
   },
   Mutation : {
     addCustomer: (root, {input}) => addCustomer(input),

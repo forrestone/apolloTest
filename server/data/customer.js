@@ -1,21 +1,25 @@
 export class Customer {
-  constructor(id, name, address, partitaIva, type, description) {
+  constructor(id, name, partitaIva, type, address, tel, fax, tipoPag, mail) {
     this.id = id;
     this.name = name;
-    this.address = address
     this.partitaIva = partitaIva,
-    this.type = type
-    this.description = description
+    this.type = type,
+    this.tel = tel,
+    this.fax = fax,
+    this.tipoPag = tipoPag,
+    this.mail = mail
+
+    this.address = new Address(address)
   }
 }
 
 export class Address {
-  constructor (nazione, via, cap, loc, prov){
-    this.nazione = nazione;
-    this.via = via;
-    this.cap = cap;
-    this.loc = loc;
-    this.prov = prov;
+  constructor (obj){
+    this.nazione = obj.nazione;
+    this.via = obj.via;
+    this.cap = obj.cap;
+    this.loc = obj.loc;
+    this.prov = obj.prov;
   }
 }
 
@@ -30,7 +34,6 @@ export const CustomerSchema =`
     name: String,
     partitaIva: String,
     type : [CustomerType]!,
-    description: String,
     address : Address,
     tel : String,
     fax : String,
@@ -43,7 +46,6 @@ export const CustomerSchema =`
     name: String,
     partitaIva: String,
     type : [CustomerType]!,
-    description: String,
     address : AddressObj,
     tel : String,
     fax : String,

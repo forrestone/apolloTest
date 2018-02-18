@@ -10,6 +10,7 @@ import AddCustomer from './components/AddCustomer';
 import MainNavigation from './components/MainNavigation';
 import BatchHistory from './components/BatchHistory';
 import AddDDT from './components/addDDT';
+import LoginPage from './components/EnsureLoggedInContainer';
 
 import './App.css'
 import Container from 'muicss/lib/react/container';
@@ -59,8 +60,17 @@ const client = new ApolloClient({
   networkInterface: networkInterfaceWithSubscriptions
 });
 
-class App extends Component {
+class App extends React.Component {
   render() {
+    if (true){
+      return (
+        <ApolloProvider client={client}>
+          <BrowserRouter>
+            <Route component={LoginPage} />
+          </BrowserRouter>
+        </ApolloProvider>
+      )
+    }
     return (
       <ApolloProvider client={client}>
         <BrowserRouter>
@@ -68,16 +78,16 @@ class App extends Component {
           <div className="App">
             <MainNavigation />
             <Switch>
-              <Route exact path="/" component={ProductsListWithData} />
-              <Route exact path="/products" component={ProductsListWithData} />
-              <Route exact path="/customers" component={CustomersListWithData} />
-              <Route exact path="/addCustomer" component={AddCustomer} />
-              <Route exact path="/customer/:id" component={CustomerDetails} />
-              <Route exact path="/addProduct" component={AddProduct} />
-              <Route exact path="/batchesHystory" component={BatchHistory} />
-              <Route exact path="/addDDT" component={AddDDT} />
-              <Route path="/product/:id" component={ProductDetails} />
-              <Route component={NotFound} />
+                <Route exact path="/" component={ProductsListWithData} />
+                <Route exact path="/products" component={ProductsListWithData} />
+                <Route exact path="/customers" component={CustomersListWithData} />
+                <Route exact path="/addCustomer" component={AddCustomer} />
+                <Route exact path="/customer/:id" component={CustomerDetails} />
+                <Route exact path="/addProduct" component={AddProduct} />
+                <Route exact path="/batchesHystory" component={BatchHistory} />
+                <Route exact path="/addDDT" component={AddDDT} />
+                <Route path="/product/:id" component={ProductDetails} />
+                <Route component={NotFound} />
             </Switch>
           </div>
           </Container>

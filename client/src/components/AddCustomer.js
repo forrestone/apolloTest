@@ -66,6 +66,7 @@ class AddCustomer extends React.Component {
       return;
     }
       let formData = this.state;
+      delete formData.address.__typename
       const that = this
       this
         .props
@@ -181,7 +182,7 @@ class AddCustomer extends React.Component {
                 disabled={!this.state.modify}
                 onChange={this.handleInputChange}
                 floatingLabel={true}
-                required={true}/>
+                required={false}/>
 
               <Input
                 label="Indirizzo Via"
@@ -254,13 +255,17 @@ class AddCustomer extends React.Component {
 
 
 const addCustomer = gql `
-  mutation AddCustomer($id: Int, $name: String!, $partitaIva : String, $address : AddressObj, $description : String, $type : [CustomerType]!) {
-    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva, address : $address, type : $type, description : $description}){
+  mutation AddCustomer($id: Int, $name: String!, $partitaIva : String,  $type : [CustomerType]!, $address : AddressObj, $tel : String, $fax : String, $tipoPag : String, $mail: String) {
+    addCustomer(input : {id : $id, name: $name, partitaIva : $partitaIva,  type : $type, address : $address, tel : $tel, fax : $fax, tipoPag: $tipoPag, mail : $mail}){
       id
       name
       partitaIva
       type
-      address
+      address{
+        via
+        loc
+        prov
+      }
     }
   }
 `;

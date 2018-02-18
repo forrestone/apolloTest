@@ -14,6 +14,7 @@ const baseDefs = `
     products: [Product]
     product(id : Int!) : Product
     batches(id : Int!) : [Lotto]
+    login(password: String!) : Boolean
   }
 
   type Mutation {
